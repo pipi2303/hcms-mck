@@ -266,7 +266,7 @@ export default function Diklat() {
               <div>
                 <label className="text-xs font-medium text-gray-700 block mb-1.5">Penyelenggara *</label>
                 <input type="text" value={form.penyelenggara} onChange={e => setForm(f => ({ ...f, penyelenggara: e.target.value }))}
-                  placeholder="Contoh: BPSDM Provinsi Lampung" className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  placeholder="Contoh: BPSDM Provinsi" className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
               <div>
                 <label className="text-xs font-medium text-gray-700 block mb-1.5">Tempat Pelaksanaan</label>

@@ -198,7 +198,7 @@ const LetterHeader = () => (
       <div className="text-left">
         <p className="text-sm text-gray-700">PEMERINTAH PROVINSI LAMPUNG</p>
         <p className="font-black text-lg text-gray-900 leading-tight">RUMAH SAKIT UMUM DAERAH</p>
-        <p className="text-xs text-gray-600 mt-0.5">Jalan Dr. Rivai No. 6, Bandar Lampung 35112</p>
+        <p className="text-xs text-gray-600 mt-0.5">Jalan Dr. Rivai No. 6, Bandar 35112</p>
         <p className="text-xs text-gray-600">Telp. (0721) 703312 | Email: info@rs.lampungprov.go.id</p>
       </div>
     </div>
@@ -224,7 +224,7 @@ const PreviewPromosi = ({ form, pegawai }: { form: SuratForm; pegawai: Pegawai |
         <div>
           <p className="font-bold">Menimbang:</p>
           <ol type="a" className="list-none ml-6 space-y-1 mt-1">
-            <li className="flex gap-2"><span className="flex-shrink-0">a.</span><span>bahwa dalam rangka pengembangan karir dan peningkatan kinerja pelayanan kesehatan di Rumah Sakit Provinsi Lampung, dipandang perlu untuk melakukan pengangkatan dalam jabatan;</span></li>
+            <li className="flex gap-2"><span className="flex-shrink-0">a.</span><span>bahwa dalam rangka pengembangan karir dan peningkatan kinerja pelayanan kesehatan di Rumah Sakit Provinsi, dipandang perlu untuk melakukan pengangkatan dalam jabatan;</span></li>
             <li className="flex gap-2"><span className="flex-shrink-0">b.</span><span>bahwa pegawai yang namanya tersebut pada diktum keputusan ini telah memenuhi persyaratan dan dianggap cakap untuk menduduki jabatan sebagaimana dimaksud{form.alasanPromosi ? `, ${form.alasanPromosi.toLowerCase()}` : ''};</span></li>
             <li className="flex gap-2"><span className="flex-shrink-0">c.</span><span>bahwa berdasarkan pertimbangan sebagaimana dimaksud pada huruf a dan huruf b, perlu menetapkan Keputusan Direktur tentang Pengangkatan dalam Jabatan.</span></li>
           </ol>
@@ -236,7 +236,7 @@ const PreviewPromosi = ({ form, pegawai }: { form: SuratForm; pegawai: Pegawai |
             {['Undang-Undang Nomor 5 Tahun 2014 tentang Aparatur Sipil Negara (Lembaran Negara Republik Indonesia Tahun 2014 Nomor 6, Tambahan Lembaran Negara Nomor 5494);',
               'Peraturan Pemerintah Nomor 11 Tahun 2017 tentang Manajemen Pegawai Negeri Sipil sebagaimana telah diubah dengan Peraturan Pemerintah Nomor 17 Tahun 2020;',
               'Peraturan Menteri Pendayagunaan Aparatur Negara dan Reformasi Birokrasi Nomor 13 Tahun 2019 tentang Pengusulan, Penetapan, dan Pembinaan Jabatan Fungsional PNS;',
-              'Peraturan Daerah Provinsi Lampung tentang Pembentukan dan Susunan Organisasi Rumah Sakit Umum Daerah Provinsi Lampung yang berlaku.'
+              'Peraturan Daerah Provinsi tentang Pembentukan dan Susunan Organisasi Rumah Sakit Umum Daerah Provinsi yang berlaku.'
             ].map((item, i) => (
               <li key={i} className="flex gap-2"><span className="flex-shrink-0">{i + 1}.</span><span>{item}</span></li>
             ))}
@@ -353,7 +353,7 @@ const PreviewRotasi = ({ form, pegawai }: { form: SuratForm; pegawai: Pegawai | 
         <div>
           <p className="font-bold">Menimbang:</p>
           <ol className="list-none ml-6 space-y-1 mt-1">
-            <li className="flex gap-2"><span>a.</span><span>bahwa dalam rangka pengembangan karir, penyegaran organisasi, dan optimalisasi pelayanan kesehatan di Rumah Sakit Provinsi Lampung;</span></li>
+            <li className="flex gap-2"><span>a.</span><span>bahwa dalam rangka pengembangan karir, penyegaran organisasi, dan optimalisasi pelayanan kesehatan di Rumah Sakit Provinsi;</span></li>
             <li className="flex gap-2"><span>b.</span><span>bahwa {form.alasanRotasi || 'dipandang perlu dilakukan pemindahan/mutasi pegawai untuk kepentingan dinas'};</span></li>
             <li className="flex gap-2"><span>c.</span><span>bahwa berdasarkan pertimbangan dimaksud, perlu menetapkan Keputusan tentang Pemindahan/Mutasi Pegawai.</span></li>
           </ol>
@@ -398,7 +398,7 @@ const PreviewTeguran = ({ form, pegawai, isLisan }: { form: SuratForm; pegawai: 
             <p>Perihal : <span className="font-semibold">Teguran {isLisan ? 'Lisan' : 'Tertulis'}</span></p>
           </div>
           <div className="text-right">
-            <p>Bandar Lampung, {fmtDateLong(form.tanggalSurat)}</p>
+            <p>Bandar, {fmtDateLong(form.tanggalSurat)}</p>
           </div>
         </div>
       </div>
@@ -410,7 +410,7 @@ const PreviewTeguran = ({ form, pegawai, isLisan }: { form: SuratForm; pegawai: 
           <p>NIP. {pegawai?.nip || '_______________'}</p>
           <p>{pegawai?.jabatan || '_______________'}</p>
           <p>di</p>
-          <p className="font-semibold">Rumah Sakit Provinsi Lampung</p>
+          <p className="font-semibold">Rumah Sakit Provinsi</p>
         </div>
 
         <p>Dengan hormat,</p>
@@ -476,7 +476,7 @@ const PreviewPemberhentian = ({ form, pegawai, isHormat }: { form: SuratForm; pe
               isHormat
                 ? 'Peraturan Pemerintah Nomor 11 Tahun 2017 tentang Manajemen Pegawai Negeri Sipil;'
                 : 'Peraturan Pemerintah Nomor 94 Tahun 2021 tentang Disiplin Pegawai Negeri Sipil, khususnya Pasal 8;',
-              'Peraturan Daerah Provinsi Lampung tentang Organisasi dan Tata Kerja Rumah Sakit.',
+              'Peraturan Daerah Provinsi tentang Organisasi dan Tata Kerja Rumah Sakit.',
             ].map((item, i) => (
               <li key={i} className="flex gap-2"><span>{i + 1}.</span><span>{item}</span></li>
             ))}
@@ -511,7 +511,7 @@ const PreviewPemberhentian = ({ form, pegawai, isHormat }: { form: SuratForm; pe
 const LetterFooter = ({ form, isLetter }: { form: SuratForm; isLetter: boolean }) => (
   <div className={`mt-8 flex ${isLetter ? 'justify-end' : 'justify-end'}`}>
     <div className="w-72">
-      <p className="text-sm">Ditetapkan di Bandar Lampung</p>
+      <p className="text-sm">Ditetapkan di Bandar</p>
       <p className="text-sm">pada tanggal <span>{fmtDateLong(form.tanggalSurat)}</span></p>
       <p className="text-sm mt-2 font-semibold">DIREKTUR RUMAH SAKIT</p>
       <p className="text-sm">PROVINSI LAMPUNG,</p>
@@ -936,7 +936,7 @@ export default function SuratKepegawaian() {
                     <div className="mt-8 pt-4 border-t border-gray-300">
                       <p className="text-sm"><span className="font-bold">Tembusan:</span></p>
                       <ol className="text-sm ml-6 mt-1 space-y-0.5">
-                        <li>1. Kepala BKD/BKN Provinsi Lampung;</li>
+                        <li>1. Kepala BKD/BKN Provinsi;</li>
                         <li>2. Kepala Bagian Umum dan Kepegawaian Rumah Sakit;</li>
                         <li>3. Kepala Unit Kerja yang bersangkutan;</li>
                         <li>4. Pegawai yang bersangkutan (untuk diketahui dan dilaksanakan).</li>

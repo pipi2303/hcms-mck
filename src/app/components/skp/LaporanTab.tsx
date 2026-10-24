@@ -221,7 +221,7 @@ export default function LaporanTab() {
       doc.setFontSize(10); doc.setFont('helvetica', 'normal');
       doc.text('Human Capital Management System', W / 2, y, { align: 'center' }); y += 5;
       doc.setFontSize(9);
-      doc.text('SIMRS - Pemerintah Provinsi Lampung', W / 2, y, { align: 'center' }); y += 4;
+      doc.text('SIMRS - Pemerintah Provinsi', W / 2, y, { align: 'center' }); y += 4;
       doc.line(M, y, W - M, y); y += 8;
 
       // Identitas Pegawai

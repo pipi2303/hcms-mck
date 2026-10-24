@@ -39,7 +39,7 @@ function getAllNodes(tree: OrgNode): OrgNode[] {
 const ORG_DATA: OrgNode = {
   id: 'rsud',
   title: 'Rumah Sakit',
-  subtitle: 'Rumah Sakit Umum Daerah Provinsi Lampung',
+  subtitle: 'Rumah Sakit Umum Daerah Provinsi',
   type: 'hospital',
   children: [
     {

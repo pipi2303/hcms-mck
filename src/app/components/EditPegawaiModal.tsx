@@ -467,7 +467,7 @@ export default function EditPegawaiModal({ open, editData, onClose, onSave }: Pr
                     <div className="space-y-1">
                       <FieldLabel label="Tempat Lahir" changed={isChanged('tempatLahir')} />
                       <input className={inputCls('tempatLahir')} value={form.tempatLahir}
-                        onChange={e => setF('tempatLahir', e.target.value)} placeholder="Bandar Lampung" />
+                        onChange={e => setF('tempatLahir', e.target.value)} placeholder="Bandar" />
                     </div>
                     <div className="space-y-1">
                       <FieldLabel label="Tanggal Lahir" required changed={isChanged('tanggalLahir')} error={fieldError('tanggalLahir')} />
@@ -691,7 +691,7 @@ export default function EditPegawaiModal({ open, editData, onClose, onSave }: Pr
                       <FieldLabel label="Nama Institusi / Universitas" changed={isChanged('institusi')} />
                       <input className={inputCls('institusi')} value={form.institusi}
                         onChange={e => setF('institusi', e.target.value)}
-                        placeholder="Universitas Lampung / Poltekkes" />
+                        placeholder="Universitas / Poltekkes" />
                     </div>
                     <div className="space-y-1">
                       <FieldLabel label="Tahun Lulus" changed={isChanged('tahunLulus')} />

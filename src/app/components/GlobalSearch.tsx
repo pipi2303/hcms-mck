@@ -52,7 +52,7 @@ const NAV_ITEMS: Omit<SearchResult, 'type' | 'id'>[] = [
   { title: 'Hubungan Industrial',    subtitle: 'Grievance & hubungan kerja',   path: '/hubungan-industrial',icon: Scale },
   { title: 'Surat Kepegawaian',      subtitle: 'Buat & kelola surat resmi',    path: '/surat-kepegawaian',  icon: Mail },
   { title: 'Laporan & Statistik',    subtitle: 'Analitik & laporan SDM',       path: '/laporan',            icon: FileBarChart2 },
-  { title: 'Struktur Organisasi',    subtitle: 'Bagan organisasi RSUD',        path: '/organisasi',         icon: Network },
+  { title: 'Struktur Organisasi',    subtitle: 'Bagan organisasi Rumah Sakit',        path: '/organisasi',         icon: Network },
   { title: 'Mutasi & Rotasi',        subtitle: 'Perpindahan unit/jabatan',     path: '/mutasi',             icon: ArrowRightLeft },
   { title: 'Penghargaan',            subtitle: 'Satyalancana dan penghargaan', path: '/penghargaan',        icon: Award },
 ];

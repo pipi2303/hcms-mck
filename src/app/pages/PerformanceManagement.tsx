@@ -1127,7 +1127,7 @@ export default function PerformanceManagement() {
       y = 10;
       tx('PEMERINTAH PROVINSI LAMPUNG', PW/2, y, 8.5, 'normal', [180,210,255], 'center');
       y += 6; tx('RUMAH SAKIT UMUM DAERAH', PW/2, y, 14, 'bold', [255,255,255], 'center');
-      y += 6; tx('Jl. Dr. Rivai No. 6, Bandar Lampung 35213  |  Telp. (0721) 703312', PW/2, y, 7.5, 'normal', [180,210,255], 'center');
+      y += 6; tx('Jl. Dr. Rivai No. 6, Bandar 35213  |  Telp. (0721) 703312', PW/2, y, 7.5, 'normal', [180,210,255], 'center');
       y += 5; tx('Akreditasi KARS Paripurna  |  RS Tipe B Pendidikan Rujukan Regional', PW/2, y, 7.5, 'normal', [180,210,255], 'center');
 
       // Title box
@@ -1261,7 +1261,7 @@ export default function PerformanceManagement() {
       // F. Tanda Tangan
       y = 238; hLine(y, 0.4, [180,180,180]); y += 6;
       tx('Mengetahui,', ML, y, 9);
-      tx('Bandar Lampung, '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}), PW/2, y, 8.5, 'normal', [80,80,80], 'center');
+      tx('Bandar, '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}), PW/2, y, 8.5, 'normal', [80,80,80], 'center');
       tx('Disetujui oleh,', PW-MR-50, y, 9);
       y += 5;
       tx('Kepala Bagian SDM & Umum', ML, y, 9, 'bold'); tx('Direktur Rumah Sakit', PW-MR-50, y, 9, 'bold');
@@ -1276,7 +1276,7 @@ export default function PerformanceManagement() {
       const total = doc.getNumberOfPages();
       for(let pg=1; pg<=total; pg++){
         doc.setPage(pg); doc.setFontSize(7.5); doc.setTextColor(150,150,150);
-        doc.text(`Hal. ${pg} dari ${total}  |  Dicetak oleh HCMS — Rumah Sakit Provinsi Lampung`, PW/2, 292, { align:'center' });
+        doc.text(`Hal. ${pg} dari ${total}  |  Dicetak oleh HCMS — Rumah Sakit Provinsi`, PW/2, 292, { align:'center' });
       }
 
       doc.save(`Laporan_Kinerja_Q1_2026_RS_${new Date().toISOString().split('T')[0]}.pdf`);

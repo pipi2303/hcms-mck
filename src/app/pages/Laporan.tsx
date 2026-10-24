@@ -562,7 +562,7 @@ export default function Laporan() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <BarChart2 className="w-5 h-5 text-blue-200" />
-              <span className="text-blue-200 text-sm font-medium">Human Capital Management System — Provinsi Lampung</span>
+              <span className="text-blue-200 text-sm font-medium">Human Capital Management System — Provinsi</span>
             </div>
             <h1 className="text-white text-2xl font-bold">Laporan &amp; Statistik SDM</h1>
             <p className="text-blue-200 text-sm mt-1">Periode: Maret 2026 · Data terupdate hari ini</p>

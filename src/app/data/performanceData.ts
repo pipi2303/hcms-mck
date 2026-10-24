@@ -9,7 +9,7 @@ export const bscObjectives: BSCObjective[] = [
   { id: 'bsc-f01', perspektif: 'Financial', departmentId: 'org', title: 'Pertumbuhan Pendapatan RS', kpi: 'Realisasi Pendapatan vs Target', target: 100, actual: 87, unit: '%', weight: 30, period: '2026', status: 'At Risk' },
   { id: 'bsc-f02', perspektif: 'Financial', departmentId: 'org', title: 'Efisiensi Biaya Operasional', kpi: 'Rasio Biaya vs Pendapatan', target: 75, actual: 72, unit: '%', weight: 25, period: '2026', status: 'On Track' },
   { id: 'bsc-f03', perspektif: 'Financial', departmentId: 'org', title: 'Bed Occupancy Rate (BOR)', kpi: 'BOR Rawat Inap', target: 80, actual: 76, unit: '%', weight: 25, period: '2026', status: 'At Risk' },
-  { id: 'bsc-f04', perspektif: 'Financial', departmentId: 'org', title: 'Cost Recovery Rate (CRR)', kpi: 'CRR RSUD', target: 95, actual: 91, unit: '%', weight: 20, period: '2026', status: 'On Track' },
+  { id: 'bsc-f04', perspektif: 'Financial', departmentId: 'org', title: 'Cost Recovery Rate (CRR)', kpi: 'CRR Rumah Sakit', target: 95, actual: 91, unit: '%', weight: 20, period: '2026', status: 'On Track' },
 
   // Customer
   { id: 'bsc-c01', perspektif: 'Customer', departmentId: 'org', title: 'Indeks Kepuasan Pasien', kpi: 'SKM Nasional', target: 85, actual: 88, unit: 'skor', weight: 35, period: '2026', status: 'Achieved' },
@@ -50,7 +50,7 @@ export const okrObjectives: OKRObjective[] = [
   // ── LEVEL ORGANISASI ─────────────────────────────────────────────────────────
   {
     id: 'okr-org-01', level: 'Organisasi', ownerId: 'org', ownerName: 'Rumah Sakit',
-    title: 'Menjadi RS Rujukan Unggulan Provinsi Lampung Tahun 2026',
+    title: 'Menjadi RS Rujukan Unggulan Provinsi Tahun 2026',
     description: 'Mencapai standar pelayanan RS tipe A dengan kepuasan pasien & keuangan sehat.',
     period: 'Q1–Q4 2026', status: 'Aktif', bscLink: 'Customer',
     keyResults: [

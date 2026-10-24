@@ -1,5 +1,5 @@
 # Color Template — Smart Hospital Executive Dashboard
-## RSUD Dr. H. Abdul Moeloek
+## Rumah Sakit
 
 > **File referensi:** `src/app/components/colors.ts` · `src/styles/theme.css` · `src/styles/fonts.css`
 > **Font utama:** Plus Jakarta Sans (300, 400, 500, 600, 700, 800)
@@ -291,4 +291,4 @@ Import:       Google Fonts — fonts.css
 
 ---
 
-*Dokumen ini dihasilkan untuk proyek Smart Hospital Executive Dashboard — RSUD Dr. H. Abdul Moeloek. Versi warna mengacu pada state aktual `colors.ts` per 18 Maret 2026.*
+*Dokumen ini dihasilkan untuk proyek Smart Hospital Executive Dashboard — Rumah Sakit. Versi warna mengacu pada state aktual `colors.ts` per 18 Maret 2026.*

@@ -52,12 +52,12 @@ function SertifikatPenghargaan({ data, pg, isPrint = false }: {
         {/* Gold gradient header band */}
         <div className={`bg-gradient-to-r ${tingkat.ribbon} px-6 py-4 text-center`}>
           {/* Hospital header */}
-          <p className="text-yellow-100 text-[11px] tracking-widest uppercase">Pemerintah Provinsi Lampung</p>
+          <p className="text-yellow-100 text-[11px] tracking-widest uppercase">Pemerintah Provinsi</p>
           <p className="text-white font-bold text-[15px] tracking-wider mt-0.5 uppercase">
             Rumah Sakit Umum Daerah
           </p>
           <p className="text-yellow-200 text-[10px] tracking-widest mt-0.5">
-            Jl. Dr. Rivai No. 6, Bandar Lampung · Telp. (0721) 703312
+            Jl. Dr. Rivai No. 6, Bandar · Telp. (0721) 703312
           </p>
         </div>
 
@@ -142,12 +142,12 @@ function SertifikatPenghargaan({ data, pg, isPrint = false }: {
 
             {/* Signature block */}
             <div className="text-right">
-              <p className="text-[11px] text-gray-600">Ditetapkan di Bandar Lampung</p>
+              <p className="text-[11px] text-gray-600">Ditetapkan di Bandar</p>
               <p className="text-[11px] text-gray-600">pada tanggal {fmtDateLong(data.tanggalPemberian)}</p>
               <p className="text-[11px] font-bold text-gray-800 mt-2 uppercase tracking-wide">
                 Direktur Rumah Sakit
               </p>
-              <p className="text-[10px] text-gray-500">Provinsi Lampung,</p>
+              <p className="text-[10px] text-gray-500">Provinsi,</p>
               <div className="h-14" />
               <p className="text-[12px] font-bold text-gray-900 underline" style={{ fontFamily: 'Georgia, serif' }}>
                 dr. IMAM GHOZALI, Sp.An., M.Kes.
@@ -160,7 +160,7 @@ function SertifikatPenghargaan({ data, pg, isPrint = false }: {
           <div className="mt-4 border-t border-yellow-300 pt-3 flex items-center justify-center gap-3">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
             <p className="text-[10px] text-gray-400 tracking-widest uppercase">
-              Sertifikat ini diterbitkan secara resmi oleh Rumah Sakit Provinsi Lampung
+              Sertifikat ini diterbitkan secara resmi oleh Rumah Sakit Provinsi
             </p>
           </div>
         </div>
@@ -601,7 +601,7 @@ export default function Penghargaan() {
                 <input
                   value={form.instansiPemberi}
                   onChange={e => setForm(f => ({ ...f, instansiPemberi: e.target.value }))}
-                  placeholder="Contoh: Gubernur Provinsi Lampung"
+                  placeholder="Contoh: Gubernur Provinsi"
                   className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

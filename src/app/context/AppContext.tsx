@@ -93,13 +93,13 @@ function generateInitialAbsensi(): AbsensiRecord[] {
       P015: { status: 'Cuti', keterangan: 'Cuti Melahirkan' },
     },
     '2026-03-09': {
-      P007: { status: 'Sakit', keterangan: 'Surat Dokter RSUD' },
+      P007: { status: 'Sakit', keterangan: 'Surat Dokter Rumah Sakit' },
       P015: { status: 'Cuti', keterangan: 'Cuti Melahirkan' },
       P020: { status: 'Alpha', keterangan: 'Tidak ada keterangan' },
     },
     '2026-03-10': {
       P006: { status: 'Dinas Luar', keterangan: 'PKT III – LAN RI Jakarta' },
-      P007: { status: 'Sakit', keterangan: 'Surat Dokter RSUD' },
+      P007: { status: 'Sakit', keterangan: 'Surat Dokter Rumah Sakit' },
       P015: { status: 'Cuti', keterangan: 'Cuti Melahirkan' },
     },
     '2026-03-11': {
@@ -275,7 +275,7 @@ const initialDiklat: DiklatRecord[] = [
     id: 'DK001', pegawaiId: 'P001',
     namaDiklat: 'Pelatihan Pengelolaan Kinerja ASN berbasis PermenPAN-RB 6/2022',
     jenisDiklat: 'Manajerial',
-    penyelenggara: 'BPSDM Provinsi Lampung',
+    penyelenggara: 'BPSDM Provinsi',
     tempatPelaksanaan: 'Bandung, Jawa Barat',
     tanggalMulai: '2025-08-04',
     tanggalSelesai: '2025-08-08',
@@ -300,7 +300,7 @@ const initialDiklat: DiklatRecord[] = [
     namaDiklat: 'Diklat Fungsional Perawat Ahli Muda',
     jenisDiklat: 'Fungsional',
     penyelenggara: 'Pusdiknakes Kemenkes',
-    tempatPelaksanaan: 'Lampung',
+    tempatPelaksanaan: '',
     tanggalMulai: '2026-04-07',
     tanggalSelesai: '2026-04-25',
     jumlahJP: 120,
@@ -357,8 +357,8 @@ const initialDiklat: DiklatRecord[] = [
     id: 'DK008', pegawaiId: 'P011',
     namaDiklat: 'Diklat Pra-Jabatan / Orientasi CPNS',
     jenisDiklat: 'Orientasi',
-    penyelenggara: 'BKPSDM Kota Bandar Lampung',
-    tempatPelaksanaan: 'Lampung',
+    penyelenggara: 'BKPSDM Kota Bandar',
+    tempatPelaksanaan: '',
     tanggalMulai: '2024-02-05',
     tanggalSelesai: '2024-02-23',
     jumlahJP: 100,
@@ -788,7 +788,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           },
           {
             level: 2,
-            jabatan: 'Direktur RSUD',
+            jabatan: 'Direktur Rumah Sakit',
             nama: c.status === 'Disetujui' ? 'dr. Imam Ghozali, Sp.An., M.Kes' : '',
             status: c.status === 'Disetujui' ? 'Disetujui' as const : c.status === 'Ditolak' ? 'Ditolak' as const : 'Pending' as const,
             tanggal: c.status === 'Disetujui' ? c.tanggalPengajuan : undefined,
@@ -871,7 +871,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       currentLevel: 1,
       approvalLevels: [
         { level: 1, jabatan: 'Kepala Unit Kerja', nama: '', status: 'Pending' },
-        { level: 2, jabatan: 'Direktur RSUD', nama: '', status: 'Pending' },
+        { level: 2, jabatan: 'Direktur Rumah Sakit', nama: '', status: 'Pending' },
       ],
     } as CutiRecord];
     cutiMutation.mutate(newList);
