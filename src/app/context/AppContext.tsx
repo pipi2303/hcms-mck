@@ -728,7 +728,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem('hr_app_user');
       if (!saved) return null;
       const parsed = JSON.parse(saved);
-      const matched = appUsers.find(u => u.id === parsed.id && u.username === parsed.username);
+      const matched = appUsers.find(u => u.id === parsed.id && u.username.toLowerCase() === parsed.username?.toLowerCase());
       if (matched) return matched;
       return null;
     } catch { return null; }
