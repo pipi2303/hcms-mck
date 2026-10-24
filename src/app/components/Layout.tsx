@@ -1,4 +1,4 @@
-import React, { memo, useState, Suspense, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { memo, useState, Suspense, useEffect, useMemo } from 'react';
 import { NavLink, Outlet, Navigate, useNavigate } from 'react-router';
 import {
   LayoutDashboard, Users, Clock, CalendarDays, Briefcase,
@@ -127,12 +127,6 @@ const SidebarContent = memo(({ sidebarOpen, currentUser, onLogout, setMobileSide
     ? currentUser.nama.split(' ').slice(0, 2).map((w: string) => w[0]).join('').toUpperCase()
     : 'U';
 
-  const navRef = useRef<HTMLElement>(null);
-  const handleNavClick = useCallback(() => {
-    navRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-    setMobileSidebarOpen?.(false);
-  }, [setMobileSidebarOpen]);
-
   const filteredMenu = useMemo(() => {
     if (!currentUser) return [];
     const role = currentUser.role as UserRole;
@@ -166,7 +160,7 @@ const SidebarContent = memo(({ sidebarOpen, currentUser, onLogout, setMobileSide
       </div>
 
       {/* Nav */}
-      <nav ref={navRef} className="flex-1 overflow-y-auto py-4 space-y-5 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto py-4 space-y-5 custom-scrollbar">
         {filteredMenu.map((section) => (
           <div key={section.section}>
             {sidebarOpen && (
@@ -177,7 +171,7 @@ const SidebarContent = memo(({ sidebarOpen, currentUser, onLogout, setMobileSide
                 key={item.path}
                 to={item.path}
                 end={item.path === '/'}
-                onClick={handleNavClick}
+                onClick={() => setMobileSidebarOpen?.(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-3 mx-2 px-3 py-2.5 rounded-lg transition-all duration-150 group ${
                     isActive
