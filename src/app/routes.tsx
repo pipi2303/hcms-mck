@@ -12,9 +12,9 @@ import Penggajian from './pages/Penggajian';
 import Absensi from './pages/Absensi';
 import DataPegawai from './pages/DataPegawai';
 import OrganisasiTree from './pages/OrganisasiTree';
+import Login from './pages/Login';
 
 // Semua halaman lain tetap lazy-loaded untuk performa optimal.
-const Login              = lazy(() => import('./pages/Login'));
 const DetailPegawai      = lazy(() => import('./pages/DetailPegawai'));
 const Cuti               = lazy(() => import('./pages/Cuti'));
 const RiwayatJabatan     = lazy(() => import('./pages/RiwayatJabatan'));
