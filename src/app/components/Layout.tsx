@@ -29,7 +29,7 @@ type MenuSection = {
 
 const menuItems: MenuSection[] = [
   {
-    section: 'UTAMA',
+    section: 'DASHBOARD',
     items: [
       { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     ],
