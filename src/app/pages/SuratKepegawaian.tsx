@@ -612,7 +612,10 @@ export default function SuratKepegawaian() {
     <div className="p-4 lg:p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-gray-800">Format Surat Kepegawaian</h1>
+        <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          <FileText className="w-5 h-5 text-gray-600" />
+          Format Surat Kepegawaian
+        </h1>
         <p className="text-sm text-gray-500 mt-0.5">Generator surat resmi kepegawaian sesuai UU No. 5/2014 & PP No. 94/2021</p>
       </div>
 

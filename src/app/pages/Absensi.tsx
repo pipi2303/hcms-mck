@@ -278,7 +278,10 @@ export default function Absensi() {
       {/* ── Header ── */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-          <h1 className="text-gray-800">Presensi & Absensi</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-orange-500" />
+            Presensi & Absensi
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">
             {formatDateLong('2026-03-05')} · Human Capital Management System
           </p>

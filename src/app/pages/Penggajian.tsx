@@ -77,7 +77,10 @@ export default function Penggajian() {
     <div className="p-4 lg:p-6 space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Penggajian & Tunjangan</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-green-600" />
+            Penggajian & Tunjangan
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">PP No. 15/2019 (Gaji PNS) · PP No. 49/2018 (Gaji PPPK) · Peraturan Tukin</p>
         </div>
         <button onClick={() => setShowGenerateModal(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">

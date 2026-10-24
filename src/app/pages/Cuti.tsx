@@ -113,7 +113,10 @@ export default function Cuti() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-gray-800">Manajemen Cuti</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <CalendarDays className="w-5 h-5 text-teal-600" />
+            Manajemen Cuti
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">Pengelolaan cuti ASN berdasarkan PP No. 11 Tahun 2017</p>
         </div>
         <div className="flex items-center gap-2">

@@ -66,7 +66,10 @@ export default function HubunganIndustrial() {
     <div className="p-4 lg:p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Hubungan Industrial & PKB</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <Scale className="w-5 h-5 text-indigo-600" />
+            Hubungan Industrial & PKB
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">UU No. 13/2003 Pasal 102–135 · UU Cipta Kerja No. 6/2023 · Peraturan Perusahaan RS</p>
         </div>
         <button onClick={() => { setEditId(null); if (activeTab === 'grievance') setFormGrievance(emptyGrievance); else setFormPHK(emptyPHK); setShowModal(true); }} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">

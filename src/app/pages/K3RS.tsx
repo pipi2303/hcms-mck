@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ShieldCheck, Search, Plus, X, Edit2, Trash2, AlertTriangle, CheckCircle, Clock, Syringe, Activity, Eye } from 'lucide-react';
+import { ShieldCheck, Search, Plus, X, Edit2, Trash2, AlertTriangle, CheckCircle, Clock, Syringe, Activity, Eye, HeartPulse } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import type { InsidenK3RS, VaksinasiRecord, MCURecord, JenisInsidenK3RS } from '../types';
 import { toast } from 'sonner';
@@ -87,7 +87,10 @@ export default function K3RS() {
     <div className="p-4 lg:p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">K3RS — Keselamatan & Kesehatan Kerja</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <HeartPulse className="w-5 h-5 text-red-500" />
+            K3RS — Keselamatan & Kesehatan Kerja
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">UU No. 1/1970 · Permenkes No. 66/2016 (K3RS) · UU No. 44/2009 Pasal 40</p>
         </div>
         <button onClick={openAdd} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">

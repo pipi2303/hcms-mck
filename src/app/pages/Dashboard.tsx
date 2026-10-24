@@ -558,6 +558,11 @@ export default function Dashboard() {
       {/* ── HR Director Dashboard ── */}
       <div className="contents">
 
+      <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+        <LayoutDashboard className="w-5 h-5 text-blue-600" />
+        Dashboard
+      </h1>
+
       {/* ── Tab Navigation ────────────────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-2 flex gap-1 overflow-x-auto">
         <TabButton active={activeTab === 'ringkasan'} onClick={() => setActiveTab('ringkasan')} icon={LayoutDashboard} label="Ringkasan" />

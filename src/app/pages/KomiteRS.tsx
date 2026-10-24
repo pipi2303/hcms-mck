@@ -74,7 +74,10 @@ export default function KomiteRS() {
     <div className="p-4 lg:p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Komite Rumah Sakit</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <Users2 className="w-5 h-5 text-purple-600" />
+            Komite Rumah Sakit
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">UU No. 44/2009 Pasal 33–37 · Permenkes No. 755/2011 (Komite Medik) · Hospital Bylaws</p>
         </div>
         <button onClick={() => { setEditId(null); if (activeTab === 'anggota') setFormAnggota(emptyAnggota); else setFormKegiatan(emptyKegiatan); setShowModal(true); }} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">

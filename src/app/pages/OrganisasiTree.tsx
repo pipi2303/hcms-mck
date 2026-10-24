@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, createContext, useCont
 import {
   Users, ZoomIn, ZoomOut, RotateCcw, ChevronDown, ChevronRight,
   User, Building2, Info, X, Search, Maximize2, Minimize2,
-  Briefcase, Award, AlertCircle, Plus, GitBranch,
+  Briefcase, Award, AlertCircle, Plus, GitBranch, Network,
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import type { Pegawai } from '../types';
@@ -969,7 +969,10 @@ export default function OrganisasiTree() {
       {/* Header */}
       <div className="flex-shrink-0 px-5 py-4 bg-white border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <h1 className="text-gray-800">Struktur Organisasi</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <Network className="w-5 h-5 text-green-600" />
+            Struktur Organisasi
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">Berdasarkan Perda Struktur Organisasi Rumah Sakit</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">

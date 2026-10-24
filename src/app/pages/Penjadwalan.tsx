@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Calendar, Plus, X, Edit2, Trash2, ChevronLeft, ChevronRight, Users, Clock } from 'lucide-react';
+import { Calendar, Plus, X, Edit2, Trash2, ChevronLeft, ChevronRight, Users, Clock, CalendarClock } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import type { JadwalShift } from '../types';
 import { toast } from 'sonner';
@@ -71,7 +71,10 @@ export default function Penjadwalan() {
     <div className="p-4 lg:p-6 space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Penjadwalan Shift & On-Call</h1>
+          <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <CalendarClock className="w-5 h-5 text-indigo-600" />
+            Penjadwalan Shift & On-Call
+          </h1>
           <p className="text-sm text-gray-500 mt-0.5">UU No. 13/2003 Pasal 77–85 · Permenkes No. 33/2015 · Pola Ketenagaan RS</p>
         </div>
         <button onClick={() => { setEditId(null); setForm(emptyForm); setShowModal(true); }} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">
