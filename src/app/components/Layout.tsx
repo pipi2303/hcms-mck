@@ -258,29 +258,23 @@ function Layout() {
     ? currentUser.nama.split(' ').slice(0, 2).map((w: string) => w[0]).join('').toUpperCase()
     : 'U';
 
-  const Sidebar = () => (
-    <aside
-      className={`hidden lg:flex flex-col bg-[#013E37] transition-all duration-300 flex-shrink-0 ${
-        sidebarOpen ? 'w-[240px]' : 'w-[64px]'
-      }`}
-    >
-      <SidebarContent sidebarOpen={sidebarOpen} currentUser={currentUser} onLogout={handleLogout} />
-    </aside>
-  );
-
-  const MobileSidebar = () => (
-    <div className="fixed inset-0 z-50 lg:hidden">
-      <div className="absolute inset-0 bg-black/50" onClick={() => setMobileSidebarOpen(false)} />
-      <aside className="absolute left-0 top-0 bottom-0 w-[240px] bg-[#013E37] flex flex-col">
-        <SidebarContent sidebarOpen={true} currentUser={currentUser} onLogout={handleLogout} setMobileSidebarOpen={setMobileSidebarOpen} />
-      </aside>
-    </div>
-  );
-
   return (
     <div className="flex h-screen font-sans overflow-hidden" style={{ backgroundColor: C.bg }}>
-      <Sidebar />
-      {mobileSidebarOpen && <MobileSidebar />}
+      <aside
+        className={`hidden lg:flex flex-col bg-[#013E37] transition-all duration-300 flex-shrink-0 ${
+          sidebarOpen ? 'w-[240px]' : 'w-[64px]'
+        }`}
+      >
+        <SidebarContent sidebarOpen={sidebarOpen} currentUser={currentUser} onLogout={handleLogout} />
+      </aside>
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileSidebarOpen(false)} />
+          <aside className="absolute left-0 top-0 bottom-0 w-[240px] bg-[#013E37] flex flex-col">
+            <SidebarContent sidebarOpen={true} currentUser={currentUser} onLogout={handleLogout} setMobileSidebarOpen={setMobileSidebarOpen} />
+          </aside>
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Header */}
