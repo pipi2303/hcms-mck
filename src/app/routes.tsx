@@ -34,6 +34,13 @@ const Mutasi             = lazy(() => import('./pages/Mutasi'));
 const KomiteRS           = lazy(() => import('./pages/KomiteRS'));
 const HubunganIndustrial = lazy(() => import('./pages/HubunganIndustrial'));
 const PerformanceManagement = lazy(() => import('./pages/PerformanceManagement'));
+const Rekrutmen             = lazy(() => import('./pages/Rekrutmen'));
+const Remunerasi            = lazy(() => import('./pages/Remunerasi'));
+const SNARSKompetensi       = lazy(() => import('./pages/SNARSKompetensi'));
+const Outsourcing           = lazy(() => import('./pages/Outsourcing'));
+const PortalPegawai         = lazy(() => import('./pages/PortalPegawai'));
+const WorkforceAnalytics    = lazy(() => import('./pages/WorkforceAnalytics'));
+const AuditTrail            = lazy(() => import('./pages/AuditTrail'));
 
 // ─── Router Singleton ─────────────────────────────────────────────────────────
 const ROUTER_KEY = '__hrAppRouter_v8';
@@ -117,9 +124,37 @@ function buildRouter(): RouterType {
               path: 'organisasi',               
               element: <ProtectedRoute roles={['admin', 'direktur', 'kepala_unit']}><OrganisasiTree /></ProtectedRoute>
             },
-            { 
-              path: 'performance',              
+            {
+              path: 'performance',
               element: <ProtectedRoute roles={['admin', 'direktur']}><PerformanceManagement /></ProtectedRoute>
+            },
+            {
+              path: 'rekrutmen',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><Rekrutmen /></ProtectedRoute>
+            },
+            {
+              path: 'remunerasi',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><Remunerasi /></ProtectedRoute>
+            },
+            {
+              path: 'snars-kompetensi',
+              element: <ProtectedRoute roles={['admin', 'direktur', 'kepala_unit']}><SNARSKompetensi /></ProtectedRoute>
+            },
+            {
+              path: 'outsourcing',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><Outsourcing /></ProtectedRoute>
+            },
+            {
+              path: 'portal',
+              element: <ProtectedRoute roles={['pegawai', 'admin', 'direktur', 'kepala_unit']}><PortalPegawai /></ProtectedRoute>
+            },
+            {
+              path: 'workforce-analytics',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><WorkforceAnalytics /></ProtectedRoute>
+            },
+            {
+              path: 'audit-trail',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><AuditTrail /></ProtectedRoute>
             },
             { path: '*',                        Component: NotFound },
           ],

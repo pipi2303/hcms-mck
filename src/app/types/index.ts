@@ -732,3 +732,166 @@ export interface PHKRecord {
   status: StatusPHK;
   catatan?: string;
 }
+
+// ─── REKRUTMEN ────────────────────────────────────────────────────────────────
+export type StatusFormasi = 'Buka' | 'Tutup' | 'Terpenuhi';
+export type StatusLamaran = 'Baru' | 'Administrasi' | 'Psikotes' | 'Wawancara' | 'Kesehatan' | 'Diterima' | 'Ditolak';
+
+export interface RekrutmenRecord {
+  id: string;
+  posisi: string;
+  unitKerja: string;
+  jumlahFormasi: number;
+  tanggalBuka: string;
+  tanggalTutup: string;
+  statusFormasi: StatusFormasi;
+  kualifikasiPendidikan: string;
+  kualifikasiJurusan?: string;
+  persyaratan?: string;
+  dibuatOleh: string;
+  keterangan?: string;
+}
+
+export interface LamaranRecord {
+  id: string;
+  rekrutmenId: string;
+  namaPerlamar: string;
+  tanggalLahir: string;
+  jenisKelamin: 'L' | 'P';
+  pendidikanTerakhir: string;
+  jurusan: string;
+  noHp: string;
+  email: string;
+  tanggalLamar: string;
+  status: StatusLamaran;
+  nilaiAdministrasi?: number;
+  nilaiPsikotes?: number;
+  nilaiWawancara?: number;
+  nilaiKesehatan?: 'Layak' | 'Tidak Layak';
+  catatanSeleksi?: string;
+  dikonversiKePegawai?: boolean;
+}
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────────
+export type StatusOrientasi = 'Belum Mulai' | 'Berlangsung' | 'Selesai';
+
+export interface OnboardingItem {
+  id: string;
+  kategori: 'Umum' | 'Klinis' | 'Unit Kerja' | 'Administratif';
+  namaItem: string;
+  status: 'Belum' | 'Selesai';
+  tanggalSelesai?: string;
+  pelaksana?: string;
+}
+
+export interface OnboardingRecord {
+  id: string;
+  pegawaiId: string;
+  tanggalMulai: string;
+  tanggalTarget: string;
+  statusOrientasi: StatusOrientasi;
+  items: OnboardingItem[];
+}
+
+// ─── REMUNERASI / JASA MEDIS ─────────────────────────────────────────────────
+export type KategoriRemunerasi = 'Medis' | 'Keperawatan' | 'Penunjang' | 'Manajemen' | 'Lainnya';
+
+export interface RemunKonfigurasi {
+  id: string;
+  namaPeriode: string;
+  periodeAwal: string;
+  periodeAkhir: string;
+  totalDanaKlaim: number;
+  persenJasaPelayanan: number;
+  persenManajemen: number;
+  persenMedis: number;
+  persenKeperawatan: number;
+  persenPenunjang: number;
+  status: 'Draft' | 'Aktif' | 'Selesai';
+}
+
+export interface RemunPoinRecord {
+  id: string;
+  konfigurasiId: string;
+  pegawaiId: string;
+  kategori: KategoriRemunerasi;
+  poinKehadiran: number;
+  poinShift: number;
+  poinJabatan: number;
+  poinKinerja: number;
+  totalPoin: number;
+  jasaPelayanan: number;
+  status: 'Draft' | 'Disetujui' | 'Dibayar';
+}
+
+// ─── SNARS KOMPETENSI ─────────────────────────────────────────────────────────
+export type KategoriKompetensiWajib = 'BHD' | 'PPI' | 'KPRS' | 'K3' | 'Mutu' | 'Lainnya';
+
+export interface KompetensiWajib {
+  id: string;
+  namaKompetensi: string;
+  kategori: KategoriKompetensiWajib;
+  berlakuUntuk: string;
+  periodeValidasiBulan: number;
+  isWajib: boolean;
+  keterangan?: string;
+}
+
+export interface KompetensiPegawai {
+  id: string;
+  pegawaiId: string;
+  kompetensiId: string;
+  tanggalSertifikasi: string;
+  tanggalExpired: string;
+  nomorSertifikat?: string;
+  penyelenggara?: string;
+  status: 'Valid' | 'Akan Expired' | 'Expired' | 'Belum';
+}
+
+// ─── OUTSOURCING ─────────────────────────────────────────────────────────────
+export type StatusKontrakVendor = 'Aktif' | 'Berakhir' | 'Dibatalkan' | 'Diperpanjang';
+
+export interface VendorOutsourcing {
+  id: string;
+  namaVendor: string;
+  noKontrak: string;
+  jenisLayanan: string;
+  kontrakMulai: string;
+  kontrakSelesai: string;
+  nilaiKontrak: number;
+  statusKontrak: StatusKontrakVendor;
+  picNama: string;
+  picNoHp: string;
+  keterangan?: string;
+}
+
+export interface TenagaOutsourcing {
+  id: string;
+  vendorId: string;
+  nama: string;
+  jenisKelamin: 'L' | 'P';
+  jabatan: string;
+  unitPenempatan: string;
+  tanggalMulai: string;
+  tanggalSelesai?: string;
+  statusAktif: 'Aktif' | 'Tidak Aktif';
+  noHp?: string;
+  keterangan?: string;
+}
+
+// ─── AUDIT TRAIL ─────────────────────────────────────────────────────────────
+export type AksiAudit = 'Tambah' | 'Ubah' | 'Hapus' | 'Approve' | 'Tolak' | 'Login' | 'Logout';
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;         // ISO datetime
+  userId: string;
+  userName: string;
+  aksi: AksiAudit;
+  modul: string;
+  deskripsi: string;
+  targetId?: string;
+  targetNama?: string;
+  nilaiLama?: string;
+  nilaiBaru?: string;
+}

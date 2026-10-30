@@ -8,6 +8,11 @@ import type {
   SlipGaji, JadwalShift, BPJSRecord, KontrakRecord,
   PenghargaanRecord, MutasiRecord, AnggotaKomite, KegiatanKomite,
   GrievanceRecord, PHKRecord,
+  RekrutmenRecord, LamaranRecord, OnboardingRecord,
+  RemunKonfigurasi, RemunPoinRecord,
+  KompetensiWajib, KompetensiPegawai,
+  VendorOutsourcing, TenagaOutsourcing,
+  AuditLog, AksiAudit,
 } from '../types';
 import {
   dataPegawai as initialPegawai,
@@ -377,6 +382,9 @@ export const appUsers: AppUser[] = [
   { id: 'U009', username: 'bari@gmail.com', password: 'Bar1', nama: 'Bari Saputra', role: 'admin', jabatan: 'Administrator Sistem', golongan: 'III/d' },
   { id: 'U010', username: 'dev@gmail.com', password: 'dev', nama: 'Developer', role: 'admin', jabatan: 'Administrator Sistem', golongan: 'III/d' },
   { id: 'U012', username: 'igd@gmail.com', password: 'igd123', nama: 'IGD Admin', role: 'admin', jabatan: 'Administrator IGD', golongan: 'III/d' },
+  // Akun ESS — role pegawai, terhubung ke data pegawai P003
+  { id: 'U021', username: 'pegawai@rs.id', password: 'pegawai123', nama: 'Ns. Rahma Dewi, S.Kep', role: 'pegawai', jabatan: 'Perawat Ahli Muda', golongan: 'III/b', pegawaiId: 'P003', unitKerja: 'R. Anak' },
+  { id: 'U022', username: 'dokter@rs.id', password: 'dokter123', nama: 'dr. Fauzan Arief', role: 'pegawai', jabatan: 'Dokter Umum', golongan: 'III/b', pegawaiId: 'P002', unitKerja: 'IGD' },
 ];
 
 // ─── State Types ──────────────────────────────────────────────────────────────
@@ -406,6 +414,16 @@ interface AppState {
   kegiatanKomite: KegiatanKomite[];
   grievance: GrievanceRecord[];
   phk: PHKRecord[];
+  rekrutmen: RekrutmenRecord[];
+  lamaran: LamaranRecord[];
+  onboarding: OnboardingRecord[];
+  remunKonfigurasi: RemunKonfigurasi[];
+  remunPoin: RemunPoinRecord[];
+  kompetensiWajib: KompetensiWajib[];
+  kompetensiPegawai: KompetensiPegawai[];
+  vendorOutsourcing: VendorOutsourcing[];
+  tenagaOutsourcing: TenagaOutsourcing[];
+  auditLog: AuditLog[];
   currentUser: AppUser | null;
   isLoggedIn: boolean;
 }
@@ -488,7 +506,42 @@ type Action =
   | { type: 'DELETE_GRIEVANCE'; id: string }
   | { type: 'ADD_PHK'; phk: PHKRecord }
   | { type: 'UPDATE_PHK'; phk: PHKRecord }
-  | { type: 'DELETE_PHK'; id: string };
+  | { type: 'DELETE_PHK'; id: string }
+  // Rekrutmen
+  | { type: 'ADD_REKRUTMEN'; r: RekrutmenRecord }
+  | { type: 'UPDATE_REKRUTMEN'; r: RekrutmenRecord }
+  | { type: 'DELETE_REKRUTMEN'; id: string }
+  // Lamaran
+  | { type: 'ADD_LAMARAN'; l: LamaranRecord }
+  | { type: 'UPDATE_LAMARAN'; l: LamaranRecord }
+  | { type: 'DELETE_LAMARAN'; id: string }
+  // Onboarding
+  | { type: 'ADD_ONBOARDING'; o: OnboardingRecord }
+  | { type: 'UPDATE_ONBOARDING'; o: OnboardingRecord }
+  | { type: 'DELETE_ONBOARDING'; id: string }
+  // Remunerasi
+  | { type: 'ADD_REMUN_CONFIG'; c: RemunKonfigurasi }
+  | { type: 'UPDATE_REMUN_CONFIG'; c: RemunKonfigurasi }
+  | { type: 'DELETE_REMUN_CONFIG'; id: string }
+  | { type: 'ADD_REMUN_POIN'; p: RemunPoinRecord }
+  | { type: 'UPDATE_REMUN_POIN'; p: RemunPoinRecord }
+  | { type: 'DELETE_REMUN_POIN'; id: string }
+  // SNARS Kompetensi
+  | { type: 'ADD_KOMPETENSI_WAJIB'; k: KompetensiWajib }
+  | { type: 'UPDATE_KOMPETENSI_WAJIB'; k: KompetensiWajib }
+  | { type: 'DELETE_KOMPETENSI_WAJIB'; id: string }
+  | { type: 'ADD_KOMPETENSI_PEGAWAI'; k: KompetensiPegawai }
+  | { type: 'UPDATE_KOMPETENSI_PEGAWAI'; k: KompetensiPegawai }
+  | { type: 'DELETE_KOMPETENSI_PEGAWAI'; id: string }
+  // Outsourcing
+  | { type: 'ADD_VENDOR'; v: VendorOutsourcing }
+  | { type: 'UPDATE_VENDOR'; v: VendorOutsourcing }
+  | { type: 'DELETE_VENDOR'; id: string }
+  | { type: 'ADD_TENAGA_OS'; t: TenagaOutsourcing }
+  | { type: 'UPDATE_TENAGA_OS'; t: TenagaOutsourcing }
+  | { type: 'DELETE_TENAGA_OS'; id: string }
+  | { type: 'ADD_AUDIT_LOG'; log: AuditLog }
+  | { type: 'CLEAR_AUDIT_LOG' };
 
 // ─── Reducer ─────────────────────────────────────────────────────────────────
 function reducer(state: AppState, action: Action): AppState {
@@ -618,6 +671,39 @@ function reducer(state: AppState, action: Action): AppState {
     case 'ADD_PHK': return { ...state, phk: [...state.phk, action.phk] };
     case 'UPDATE_PHK': return { ...state, phk: state.phk.map(p => p.id === action.phk.id ? action.phk : p) };
     case 'DELETE_PHK': return { ...state, phk: state.phk.filter(p => p.id !== action.id) };
+    // Rekrutmen
+    case 'ADD_REKRUTMEN': return { ...state, rekrutmen: [...state.rekrutmen, action.r] };
+    case 'UPDATE_REKRUTMEN': return { ...state, rekrutmen: state.rekrutmen.map(r => r.id === action.r.id ? action.r : r) };
+    case 'DELETE_REKRUTMEN': return { ...state, rekrutmen: state.rekrutmen.filter(r => r.id !== action.id) };
+    case 'ADD_LAMARAN': return { ...state, lamaran: [...state.lamaran, action.l] };
+    case 'UPDATE_LAMARAN': return { ...state, lamaran: state.lamaran.map(l => l.id === action.l.id ? action.l : l) };
+    case 'DELETE_LAMARAN': return { ...state, lamaran: state.lamaran.filter(l => l.id !== action.id) };
+    case 'ADD_ONBOARDING': return { ...state, onboarding: [...state.onboarding, action.o] };
+    case 'UPDATE_ONBOARDING': return { ...state, onboarding: state.onboarding.map(o => o.id === action.o.id ? action.o : o) };
+    case 'DELETE_ONBOARDING': return { ...state, onboarding: state.onboarding.filter(o => o.id !== action.id) };
+    // Remunerasi
+    case 'ADD_REMUN_CONFIG': return { ...state, remunKonfigurasi: [...state.remunKonfigurasi, action.c] };
+    case 'UPDATE_REMUN_CONFIG': return { ...state, remunKonfigurasi: state.remunKonfigurasi.map(c => c.id === action.c.id ? action.c : c) };
+    case 'DELETE_REMUN_CONFIG': return { ...state, remunKonfigurasi: state.remunKonfigurasi.filter(c => c.id !== action.id) };
+    case 'ADD_REMUN_POIN': return { ...state, remunPoin: [...state.remunPoin, action.p] };
+    case 'UPDATE_REMUN_POIN': return { ...state, remunPoin: state.remunPoin.map(p => p.id === action.p.id ? action.p : p) };
+    case 'DELETE_REMUN_POIN': return { ...state, remunPoin: state.remunPoin.filter(p => p.id !== action.id) };
+    // SNARS
+    case 'ADD_KOMPETENSI_WAJIB': return { ...state, kompetensiWajib: [...state.kompetensiWajib, action.k] };
+    case 'UPDATE_KOMPETENSI_WAJIB': return { ...state, kompetensiWajib: state.kompetensiWajib.map(k => k.id === action.k.id ? action.k : k) };
+    case 'DELETE_KOMPETENSI_WAJIB': return { ...state, kompetensiWajib: state.kompetensiWajib.filter(k => k.id !== action.id) };
+    case 'ADD_KOMPETENSI_PEGAWAI': return { ...state, kompetensiPegawai: [...state.kompetensiPegawai, action.k] };
+    case 'UPDATE_KOMPETENSI_PEGAWAI': return { ...state, kompetensiPegawai: state.kompetensiPegawai.map(k => k.id === action.k.id ? action.k : k) };
+    case 'DELETE_KOMPETENSI_PEGAWAI': return { ...state, kompetensiPegawai: state.kompetensiPegawai.filter(k => k.id !== action.id) };
+    // Outsourcing
+    case 'ADD_VENDOR': return { ...state, vendorOutsourcing: [...state.vendorOutsourcing, action.v] };
+    case 'UPDATE_VENDOR': return { ...state, vendorOutsourcing: state.vendorOutsourcing.map(v => v.id === action.v.id ? action.v : v) };
+    case 'DELETE_VENDOR': return { ...state, vendorOutsourcing: state.vendorOutsourcing.filter(v => v.id !== action.id) };
+    case 'ADD_TENAGA_OS': return { ...state, tenagaOutsourcing: [...state.tenagaOutsourcing, action.t] };
+    case 'UPDATE_TENAGA_OS': return { ...state, tenagaOutsourcing: state.tenagaOutsourcing.map(t => t.id === action.t.id ? action.t : t) };
+    case 'DELETE_TENAGA_OS': return { ...state, tenagaOutsourcing: state.tenagaOutsourcing.filter(t => t.id !== action.id) };
+    case 'ADD_AUDIT_LOG': return { ...state, auditLog: [action.log, ...state.auditLog].slice(0, 500) };
+    case 'CLEAR_AUDIT_LOG': return { ...state, auditLog: [] };
 
     default:
       return state;
@@ -708,6 +794,35 @@ interface AppContextValue extends AppState {
   addPHK: (p: Omit<PHKRecord, 'id'>) => void;
   updatePHK: (p: PHKRecord) => void;
   deletePHK: (id: string) => void;
+  addRekrutmen: (r: Omit<RekrutmenRecord, 'id'>) => void;
+  updateRekrutmen: (r: RekrutmenRecord) => void;
+  deleteRekrutmen: (id: string) => void;
+  addLamaran: (l: Omit<LamaranRecord, 'id'>) => void;
+  updateLamaran: (l: LamaranRecord) => void;
+  deleteLamaran: (id: string) => void;
+  addOnboarding: (o: Omit<OnboardingRecord, 'id'>) => void;
+  updateOnboarding: (o: OnboardingRecord) => void;
+  deleteOnboarding: (id: string) => void;
+  addRemunKonfigurasi: (c: Omit<RemunKonfigurasi, 'id'>) => void;
+  updateRemunKonfigurasi: (c: RemunKonfigurasi) => void;
+  deleteRemunKonfigurasi: (id: string) => void;
+  addRemunPoin: (p: Omit<RemunPoinRecord, 'id'>) => void;
+  updateRemunPoin: (p: RemunPoinRecord) => void;
+  deleteRemunPoin: (id: string) => void;
+  addKompetensiWajib: (k: Omit<KompetensiWajib, 'id'>) => void;
+  updateKompetensiWajib: (k: KompetensiWajib) => void;
+  deleteKompetensiWajib: (id: string) => void;
+  addKompetensiPegawai: (k: Omit<KompetensiPegawai, 'id'>) => void;
+  updateKompetensiPegawai: (k: KompetensiPegawai) => void;
+  deleteKompetensiPegawai: (id: string) => void;
+  addVendorOutsourcing: (v: Omit<VendorOutsourcing, 'id'>) => void;
+  updateVendorOutsourcing: (v: VendorOutsourcing) => void;
+  deleteVendorOutsourcing: (id: string) => void;
+  addTenagaOutsourcing: (t: Omit<TenagaOutsourcing, 'id'>) => void;
+  updateTenagaOutsourcing: (t: TenagaOutsourcing) => void;
+  deleteTenagaOutsourcing: (id: string) => void;
+  addAuditLog: (modul: string, aksi: AksiAudit, deskripsi: string, opts?: { targetId?: string; targetNama?: string; nilaiLama?: string; nilaiBaru?: string }) => void;
+  clearAuditLog: () => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -760,6 +875,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     kegiatanKomite: initialKegiatanKomite as KegiatanKomite[],
     grievance: initialGrievance as GrievanceRecord[],
     phk: initialPHK as PHKRecord[],
+    rekrutmen: [],
+    lamaran: [],
+    onboarding: [],
+    remunKonfigurasi: [],
+    remunPoin: [],
+    kompetensiWajib: [],
+    kompetensiPegawai: [],
+    vendorOutsourcing: [],
+    tenagaOutsourcing: [],
+    auditLog: [],
     currentUser: savedUser,
     isLoggedIn: !!savedUser,
   });
@@ -837,6 +962,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (user) {
       localStorage.setItem('hr_app_user', JSON.stringify(user));
       dispatch({ type: 'LOGIN', user });
+      dispatch({ type: 'ADD_AUDIT_LOG', log: { id: `AL${Date.now()}`, timestamp: new Date().toISOString(), userId: user.id, userName: user.nama, aksi: 'Login', modul: 'Autentikasi', deskripsi: `Login berhasil sebagai ${user.role}` } });
       return true;
     }
     return false;
@@ -1030,6 +1156,39 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const updatePHK = useCallback((p: PHKRecord) => dispatch({ type: 'UPDATE_PHK', phk: p }), []);
   const deletePHK = useCallback((id: string) => dispatch({ type: 'DELETE_PHK', id }), []);
 
+  const addRekrutmen = useCallback((r: Omit<RekrutmenRecord, 'id'>) => dispatch({ type: 'ADD_REKRUTMEN', r: { ...r, id: genId('RK') } }), []);
+  const updateRekrutmen = useCallback((r: RekrutmenRecord) => dispatch({ type: 'UPDATE_REKRUTMEN', r }), []);
+  const deleteRekrutmen = useCallback((id: string) => dispatch({ type: 'DELETE_REKRUTMEN', id }), []);
+  const addLamaran = useCallback((l: Omit<LamaranRecord, 'id'>) => dispatch({ type: 'ADD_LAMARAN', l: { ...l, id: genId('LM') } }), []);
+  const updateLamaran = useCallback((l: LamaranRecord) => dispatch({ type: 'UPDATE_LAMARAN', l }), []);
+  const deleteLamaran = useCallback((id: string) => dispatch({ type: 'DELETE_LAMARAN', id }), []);
+  const addOnboarding = useCallback((o: Omit<OnboardingRecord, 'id'>) => dispatch({ type: 'ADD_ONBOARDING', o: { ...o, id: genId('OB') } }), []);
+  const updateOnboarding = useCallback((o: OnboardingRecord) => dispatch({ type: 'UPDATE_ONBOARDING', o }), []);
+  const deleteOnboarding = useCallback((id: string) => dispatch({ type: 'DELETE_ONBOARDING', id }), []);
+  const addRemunKonfigurasi = useCallback((c: Omit<RemunKonfigurasi, 'id'>) => dispatch({ type: 'ADD_REMUN_CONFIG', c: { ...c, id: genId('RC') } }), []);
+  const updateRemunKonfigurasi = useCallback((c: RemunKonfigurasi) => dispatch({ type: 'UPDATE_REMUN_CONFIG', c }), []);
+  const deleteRemunKonfigurasi = useCallback((id: string) => dispatch({ type: 'DELETE_REMUN_CONFIG', id }), []);
+  const addRemunPoin = useCallback((p: Omit<RemunPoinRecord, 'id'>) => dispatch({ type: 'ADD_REMUN_POIN', p: { ...p, id: genId('RP') } }), []);
+  const updateRemunPoin = useCallback((p: RemunPoinRecord) => dispatch({ type: 'UPDATE_REMUN_POIN', p }), []);
+  const deleteRemunPoin = useCallback((id: string) => dispatch({ type: 'DELETE_REMUN_POIN', id }), []);
+  const addKompetensiWajib = useCallback((k: Omit<KompetensiWajib, 'id'>) => dispatch({ type: 'ADD_KOMPETENSI_WAJIB', k: { ...k, id: genId('KW') } }), []);
+  const updateKompetensiWajib = useCallback((k: KompetensiWajib) => dispatch({ type: 'UPDATE_KOMPETENSI_WAJIB', k }), []);
+  const deleteKompetensiWajib = useCallback((id: string) => dispatch({ type: 'DELETE_KOMPETENSI_WAJIB', id }), []);
+  const addKompetensiPegawai = useCallback((k: Omit<KompetensiPegawai, 'id'>) => dispatch({ type: 'ADD_KOMPETENSI_PEGAWAI', k: { ...k, id: genId('KP') } }), []);
+  const updateKompetensiPegawai = useCallback((k: KompetensiPegawai) => dispatch({ type: 'UPDATE_KOMPETENSI_PEGAWAI', k }), []);
+  const deleteKompetensiPegawai = useCallback((id: string) => dispatch({ type: 'DELETE_KOMPETENSI_PEGAWAI', id }), []);
+  const addVendorOutsourcing = useCallback((v: Omit<VendorOutsourcing, 'id'>) => dispatch({ type: 'ADD_VENDOR', v: { ...v, id: genId('VO') } }), []);
+  const updateVendorOutsourcing = useCallback((v: VendorOutsourcing) => dispatch({ type: 'UPDATE_VENDOR', v }), []);
+  const deleteVendorOutsourcing = useCallback((id: string) => dispatch({ type: 'DELETE_VENDOR', id }), []);
+  const addTenagaOutsourcing = useCallback((t: Omit<TenagaOutsourcing, 'id'>) => dispatch({ type: 'ADD_TENAGA_OS', t: { ...t, id: genId('TO') } }), []);
+  const updateTenagaOutsourcing = useCallback((t: TenagaOutsourcing) => dispatch({ type: 'UPDATE_TENAGA_OS', t }), []);
+  const deleteTenagaOutsourcing = useCallback((id: string) => dispatch({ type: 'DELETE_TENAGA_OS', id }), []);
+
+  const addAuditLog = useCallback((modul: string, aksi: AksiAudit, deskripsi: string, opts?: { targetId?: string; targetNama?: string; nilaiLama?: string; nilaiBaru?: string }) => {
+    dispatch({ type: 'ADD_AUDIT_LOG', log: { id: genId('AL'), timestamp: new Date().toISOString(), userId: state.currentUser?.id ?? '-', userName: state.currentUser?.nama ?? 'Sistem', aksi, modul, deskripsi, ...opts } });
+  }, [state.currentUser]);
+  const clearAuditLog = useCallback(() => dispatch({ type: 'CLEAR_AUDIT_LOG' }), []);
+
   const value: AppContextValue = {
     ...state,
     dispatch,
@@ -1060,6 +1219,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addKegiatanKomite, updateKegiatanKomite, deleteKegiatanKomite,
     addGrievance, updateGrievance, deleteGrievance,
     addPHK, updatePHK, deletePHK,
+    addRekrutmen, updateRekrutmen, deleteRekrutmen,
+    addLamaran, updateLamaran, deleteLamaran,
+    addOnboarding, updateOnboarding, deleteOnboarding,
+    addRemunKonfigurasi, updateRemunKonfigurasi, deleteRemunKonfigurasi,
+    addRemunPoin, updateRemunPoin, deleteRemunPoin,
+    addKompetensiWajib, updateKompetensiWajib, deleteKompetensiWajib,
+    addKompetensiPegawai, updateKompetensiPegawai, deleteKompetensiPegawai,
+    addVendorOutsourcing, updateVendorOutsourcing, deleteVendorOutsourcing,
+    addTenagaOutsourcing, updateTenagaOutsourcing, deleteTenagaOutsourcing,
+    addAuditLog, clearAuditLog,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

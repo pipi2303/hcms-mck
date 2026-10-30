@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { DollarSign, Search, Plus, Eye, X, Printer, CheckCircle, Clock, CreditCard, TrendingUp, Download } from 'lucide-react';
+import { DollarSign, Search, Plus, Eye, X, Printer, CheckCircle, Clock, CreditCard, TrendingUp, Download, FileText } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import type { SlipGaji } from '../types';
 import { toast } from 'sonner';
 import { GAJI_POKOK, TUNJANGAN_FUNGSIONAL, TUNJANGAN_STRUKTURAL } from '../data/mockDataRS';
+import { hitungPPh21 } from '../data/constants';
 
 const BULAN_NAMES = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 const statusConfig = {
@@ -15,6 +16,8 @@ const fmt = (n: number) => new Intl.NumberFormat('id-ID').format(n);
 
 export default function Penggajian() {
   const { slipGaji, pegawai, addSlipGaji, updateSlipGaji, deleteSlipGaji } = useAppContext();
+  const [activeTab, setActiveTab] = useState<'slip' | 'spt'>('slip');
+  const [sptTahun, setSptTahun] = useState(2026);
   const [search, setSearch] = useState('');
   const [filterBulan, setFilterBulan] = useState<string>('3');
   const [filterTahun, setFilterTahun] = useState<string>('2026');
@@ -22,6 +25,26 @@ export default function Penggajian() {
   const [detailSlip, setDetailSlip] = useState<SlipGaji | null>(null);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [genForm, setGenForm] = useState({ bulan: 3, tahun: 2026 });
+
+  // SPT PPh 21 tahunan
+  const sptData = useMemo(() => {
+    return pegawai.filter(p => p.statusAktif === 'Aktif').map(p => {
+      const slips = slipGaji.filter(s => s.pegawaiId === p.id && s.tahun === sptTahun && s.status !== 'Draft');
+      const brutoTahunan = slips.reduce((a, s) => a + s.totalBruto, 0);
+      const pphDipotong = slips.reduce((a, s) => a + s.potonganPPh21, 0);
+      const fullName = `${p.gelarDepan ? p.gelarDepan + ' ' : ''}${p.nama}${p.gelarBelakang ? ', ' + p.gelarBelakang : ''}`;
+      return { id: p.id, nama: fullName, nip: p.nip, golongan: p.golongan, statusPerkawinan: p.statusPerkawinan, unitKerja: p.unitKerja, brutoTahunan, pphDipotong, bulanGaji: slips.length };
+    }).filter(d => d.bulanGaji > 0);
+  }, [slipGaji, pegawai, sptTahun]);
+
+  const exportSPT = () => {
+    const headers = ['NIP','Nama','Golongan','Status Perkawinan','Unit Kerja','Bulan Gaji','Penghasilan Bruto Tahunan','PPh 21 Dipotong','Rata-rata PPh per Bulan'];
+    const rows = sptData.map(d => [d.nip, d.nama, d.golongan, d.statusPerkawinan, d.unitKerja, d.bulanGaji, d.brutoTahunan, d.pphDipotong, d.bulanGaji > 0 ? Math.round(d.pphDipotong / d.bulanGaji) : 0]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? '')}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `SPT_PPh21_${sptTahun}.csv`; a.click();
+    toast.success(`Export SPT PPh 21 ${sptTahun} berhasil`);
+  };
 
   const getFullName = (id: string) => { const p = pegawai.find(x => x.id === id); if (!p) return '—'; return `${p.gelarDepan ? p.gelarDepan + ' ' : ''}${p.nama}${p.gelarBelakang ? ', ' + p.gelarBelakang : ''}`; };
   const getPegawai = (id: string) => pegawai.find(x => x.id === id);
@@ -64,7 +87,7 @@ export default function Penggajian() {
       const potBPJSKes = Math.round(gp * 0.01);
       const potBPJSTK = Math.round(gp * 0.02);
       const potTaspen = Math.round(gp * 0.0475);
-      const potPph = Math.round(bruto * 0.025);
+      const potPph = hitungPPh21(bruto, p.statusPerkawinan);
       const totalPot = potBPJSKes + potBPJSTK + potTaspen + potPph;
       addSlipGaji({ pegawaiId: p.id, bulan: genForm.bulan, tahun: genForm.tahun, gajiPokok: gp, tunjanganJabatan: tj, tunjanganFungsional: tf, tunjanganBeras: tberas, tunjanganAnak: tanak, tunjanganIstri: tistri, tunjanganKinerja: tukin, tambahanLain: [], potonganBPJSKes: potBPJSKes, potonganBPJSTK: potBPJSTK, potonganPPh21: potPph, potonganTaspen: potTaspen, potonganLain: [], totalBruto: bruto, totalPotongan: totalPot, totalNetto: bruto - totalPot, status: 'Draft' } as any);
       count++;
@@ -81,13 +104,92 @@ export default function Penggajian() {
             <DollarSign className="w-5 h-5 text-green-600" />
             Penggajian & Tunjangan
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">PP No. 15/2019 (Gaji PNS) · PP No. 49/2018 (Gaji PPPK) · Peraturan Tukin</p>
+          <p className="text-sm text-gray-500 mt-0.5">PP No. 15/2019 (Gaji PNS) · PP No. 49/2018 (Gaji PPPK) · Peraturan Tukin · TER PMK 168/2023</p>
         </div>
-        <button onClick={() => setShowGenerateModal(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">
-          <Plus className="w-4 h-4" /> Generate Slip Gaji
-        </button>
+        <div className="flex items-center gap-2">
+          {activeTab === 'spt' && <button onClick={exportSPT} className="flex items-center gap-2 border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm px-4 py-2 rounded-lg"><Download className="w-4 h-4" /> Export SPT</button>}
+          {activeTab === 'slip' && <button onClick={() => setShowGenerateModal(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg"><Plus className="w-4 h-4" /> Generate Slip Gaji</button>}
+        </div>
       </div>
 
+      {/* Tab switcher */}
+      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+        {([['slip', 'Slip Gaji'], ['spt', 'SPT PPh 21 Tahunan']] as const).map(([id, label]) => (
+          <button key={id} onClick={() => setActiveTab(id)} className={`px-4 py-1.5 text-sm rounded-md font-medium transition-all ${activeTab === id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>{label}</button>
+        ))}
+      </div>
+
+      {activeTab === 'spt' && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-gray-700">Tahun Pajak</label>
+            <select value={sptTahun} onChange={e => setSptTahun(+e.target.value)} className="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+            <span className="text-xs text-gray-400">{sptData.length} pegawai terdata</span>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: 'Total Bruto Tahunan', value: `Rp ${(sptData.reduce((a,d) => a+d.brutoTahunan, 0)/1e9).toFixed(2)}M`, sub: `Tahun ${sptTahun}`, color: 'text-blue-600' },
+              { label: 'Total PPh 21 Dipotong', value: `Rp ${(sptData.reduce((a,d) => a+d.pphDipotong, 0)/1e6).toFixed(1)}jt`, sub: 'Kewajiban pajak', color: 'text-red-600' },
+              { label: 'Rata-rata PPh/Bulan', value: `Rp ${fmt(Math.round(sptData.reduce((a,d) => a+d.pphDipotong, 0) / Math.max(sptData.reduce((a,d) => a+d.bulanGaji, 0), 1)))}`, sub: 'Per slip', color: 'text-orange-600' },
+              { label: 'Pegawai Wajib Pajak', value: sptData.filter(d => d.pphDipotong > 0).length, sub: 'PPh > 0', color: 'text-green-600' },
+            ].map((s, i) => (
+              <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
+                <p className="text-xs text-gray-500">{s.label}</p>
+                <p className={`text-xl font-bold mt-1 ${s.color}`}>{s.value}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{s.sub}</p>
+              </div>
+            ))}
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-semibold text-gray-700">Laporan SPT PPh Pasal 21 — Tahun {sptTahun}</span>
+              <span className="ml-auto text-xs text-gray-400">Basis: slip gaji status Disetujui & Dibayar</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Nama Pegawai</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 hidden md:table-cell">NIP</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 hidden lg:table-cell">Golongan</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 hidden lg:table-cell">Status Kawin</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500">Bruto Tahunan</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500">PPh 21</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 hidden sm:table-cell">Bln Gaji</th>
+                </tr></thead>
+                <tbody className="divide-y divide-gray-50">
+                  {sptData.length === 0
+                    ? <tr><td colSpan={7} className="py-10 text-center text-gray-400 text-sm">Belum ada data slip gaji untuk tahun {sptTahun}</td></tr>
+                    : sptData.map(d => (
+                      <tr key={d.id} className="hover:bg-gray-50/60">
+                        <td className="px-4 py-3"><p className="font-medium text-sm text-gray-800">{d.nama}</p><p className="text-xs text-gray-400">{d.unitKerja}</p></td>
+                        <td className="px-4 py-3 text-xs text-gray-500 hidden md:table-cell">{d.nip}</td>
+                        <td className="px-4 py-3 text-xs text-gray-700 hidden lg:table-cell">{d.golongan}</td>
+                        <td className="px-4 py-3 text-xs text-gray-700 hidden lg:table-cell">{d.statusPerkawinan}</td>
+                        <td className="px-4 py-3 text-right text-xs text-gray-700">Rp {fmt(d.brutoTahunan)}</td>
+                        <td className="px-4 py-3 text-right text-xs font-semibold text-red-600">Rp {fmt(d.pphDipotong)}</td>
+                        <td className="px-4 py-3 text-right text-xs text-gray-500 hidden sm:table-cell">{d.bulanGaji}</td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+                {sptData.length > 0 && (
+                  <tfoot><tr className="bg-gray-50 border-t-2 border-gray-200">
+                    <td colSpan={4} className="px-4 py-3 text-sm font-semibold text-gray-700">TOTAL ({sptData.length} pegawai)</td>
+                    <td className="px-4 py-3 text-right font-bold text-gray-900">Rp {fmt(sptData.reduce((a,d) => a+d.brutoTahunan, 0))}</td>
+                    <td className="px-4 py-3 text-right font-bold text-red-600">Rp {fmt(sptData.reduce((a,d) => a+d.pphDipotong, 0))}</td>
+                    <td className="px-4 py-3"></td>
+                  </tr></tfoot>
+                )}
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'slip' && <div className="space-y-5">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Total Bruto (Filter)', value: `Rp ${(totalBruto / 1e6).toFixed(1)}jt`, sub: `${filtered.length} pegawai`, color: 'text-blue-600' },
@@ -287,6 +389,7 @@ export default function Penggajian() {
           </div>
         </div>
       )}
+      </div>}
     </div>
   );
 }

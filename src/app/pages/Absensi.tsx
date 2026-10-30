@@ -87,7 +87,9 @@ function StatusBadge({ status }: { status: string }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function Absensi() {
-  const { pegawai, absensi, addAbsensi, updateAbsensi, deleteAbsensi } = useAppContext();
+  const { pegawai, absensi, currentUser, addAbsensi, updateAbsensi, deleteAbsensi } = useAppContext();
+  const isESS = currentUser?.role === 'pegawai';
+  const absensiScope = isESS && currentUser?.pegawaiId ? absensi.filter(a => a.pegawaiId === currentUser.pegawaiId) : absensi;
 
   // ── Tab ──
   const [activeTab, setActiveTab] = useState<TabType>('harian');
@@ -115,8 +117,8 @@ export default function Absensi() {
 
   // ── Computed: Data Harian ──
   const dateRecords = useMemo(() =>
-    absensi.filter(a => a.tanggal === selectedDate),
-    [absensi, selectedDate]
+    absensiScope.filter(a => a.tanggal === selectedDate),
+    [absensiScope, selectedDate]
   );
 
   const filteredRecords = useMemo(() => {
@@ -160,7 +162,7 @@ export default function Absensi() {
       const q = rekapSearch.toLowerCase();
       list = list.filter(p => p.nama.toLowerCase().includes(q) || p.nip.includes(q));
     }
-    const monthAbs = absensi.filter(a => {
+    const monthAbs = absensiScope.filter(a => {
       const d = new Date(a.tanggal + 'T00:00:00');
       return d.getMonth() === rekapMonth && d.getFullYear() === rekapYear && a.status !== 'Libur';
     });

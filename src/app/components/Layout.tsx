@@ -7,6 +7,7 @@ import {
   Hospital, UserCircle, ChevronLeft, ShieldAlert, GraduationCap, Mail,
   ShieldCheck, HeartPulse, DollarSign, CalendarClock, Heart,
   FileSignature, Award, ArrowRightLeft, Users2, Scale, Network, Gauge,
+  UserPlus, Coins, ClipboardCheck, Building2, BarChart3, History,
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { toast } from 'sonner';
@@ -100,6 +101,39 @@ const menuItems: MenuSection[] = [
       { path: '/laporan', label: 'Laporan & Statistik', icon: FileBarChart2, roles: ['admin', 'direktur'] },
     ],
   },
+  {
+    section: 'REKRUTMEN & OUTSOURCING',
+    roles: ['admin', 'direktur'],
+    items: [
+      { path: '/rekrutmen', label: 'Rekrutmen & Onboarding', icon: UserPlus, roles: ['admin', 'direktur'] },
+      { path: '/outsourcing', label: 'Manajemen Outsourcing', icon: Building2, roles: ['admin', 'direktur'] },
+    ],
+  },
+  {
+    section: 'REMUNERASI & MUTU',
+    roles: ['admin', 'direktur'],
+    items: [
+      { path: '/remunerasi', label: 'Remunerasi & Jasa Medis', icon: Coins, roles: ['admin', 'direktur'] },
+      { path: '/snars-kompetensi', label: 'SNARS — Kompetensi Wajib', icon: ClipboardCheck, roles: ['admin', 'direktur', 'kepala_unit'] },
+    ],
+  },
+  {
+    section: 'ANALITIK & SISTEM',
+    roles: ['admin', 'direktur'],
+    items: [
+      { path: '/workforce-analytics', label: 'Workforce Analytics', icon: BarChart3, roles: ['admin', 'direktur'] },
+      { path: '/audit-trail', label: 'Audit Trail Sistem', icon: History, roles: ['admin', 'direktur'] },
+    ],
+  },
+  {
+    section: 'PORTAL SAYA',
+    roles: ['pegawai'],
+    items: [
+      { path: '/portal', label: 'Portal Pegawai (ESS)', icon: LayoutDashboard, roles: ['pegawai'] },
+      { path: '/cuti', label: 'Cuti Saya', icon: CalendarDays, roles: ['pegawai'] },
+      { path: '/absensi', label: 'Absensi Saya', icon: Clock, roles: ['pegawai'] },
+    ],
+  },
 ];
 
 const roleLabel: Record<string, string> = {
@@ -109,13 +143,7 @@ const roleLabel: Record<string, string> = {
   pegawai: 'Pegawai',
 };
 
-const notifications = [
-  { id: 1, text: 'Pengajuan cuti Ns. Jumiah, S.Kep menunggu persetujuan', time: '5 mnt lalu', type: 'cuti' },
-  { id: 2, text: 'Kenaikan pangkat Susilawati, SKM., MM periode April 2026 siap diproses', time: '1 jam lalu', type: 'pangkat' },
-  { id: 3, text: 'Pengajuan cuti dr. Marzuqi Sayuti menunggu persetujuan', time: '2 jam lalu', type: 'cuti' },
-  { id: 4, text: '3 pegawai akan memasuki batas pensiun dalam 2 tahun', time: '1 hari lalu', type: 'info' },
-  { id: 5, text: 'SKP semester 1 tahun 2026 belum ditetapkan untuk 8 pegawai', time: '2 hari lalu', type: 'skp' },
-];
+// computed in Layout component — see useComputedNotifications below
 
 const SidebarContent = memo(({ sidebarOpen, currentUser, onLogout, setMobileSidebarOpen }: {
   sidebarOpen: boolean;
@@ -221,6 +249,50 @@ const SidebarContent = memo(({ sidebarOpen, currentUser, onLogout, setMobileSide
 
 SidebarContent.displayName = 'SidebarContent';
 
+// ─── Computed notifications from live state ───────────────────────────────────
+function useComputedNotifications() {
+  const { cuti, str, sip, kontrak, pegawai } = useAppContext();
+  return useMemo(() => {
+    const today = Date.now();
+    const daysLeft = (d: string) => Math.ceil((new Date(d).getTime() - today) / 86400000);
+    const getName = (id: string) => { const p = pegawai.find(x => x.id === id); return p ? `${p.gelarDepan ? p.gelarDepan + ' ' : ''}${p.nama}` : id; };
+    const items: { id: string; text: string; type: string; path: string }[] = [];
+
+    // Cuti pending
+    cuti.filter(c => c.status === 'Pending').slice(0, 3).forEach(c => {
+      items.push({ id: `cuti-${c.id}`, text: `Pengajuan cuti ${getName(c.pegawaiId)} (${c.jenisCuti}) menunggu persetujuan`, type: 'cuti', path: '/cuti' });
+    });
+
+    // STR expired/akan expired
+    str.filter(s => s.status === 'Expired').slice(0, 2).forEach(s => {
+      items.push({ id: `str-exp-${s.id}`, text: `STR ${getName(s.pegawaiId)} (${s.jenisTenaga}) sudah EXPIRED`, type: 'danger', path: '/credentialing' });
+    });
+    str.filter(s => s.status === 'Akan Expired').slice(0, 2).forEach(s => {
+      items.push({ id: `str-ae-${s.id}`, text: `STR ${getName(s.pegawaiId)} akan expired ${daysLeft(s.tanggalExpired)} hari lagi`, type: 'warning', path: '/credentialing' });
+    });
+
+    // SIP expired/akan expired
+    sip.filter(s => s.status === 'Expired').slice(0, 2).forEach(s => {
+      items.push({ id: `sip-exp-${s.id}`, text: `${s.jenisDokumen} ${getName(s.pegawaiId)} sudah EXPIRED`, type: 'danger', path: '/credentialing' });
+    });
+
+    // Kontrak akan habis ≤60 hari
+    kontrak.filter(k => k.statusKontrak === 'Aktif' && k.tanggalSelesai && daysLeft(k.tanggalSelesai) <= 60 && daysLeft(k.tanggalSelesai) >= 0).slice(0, 3).forEach(k => {
+      items.push({ id: `ktk-${k.id}`, text: `Kontrak ${getName(k.pegawaiId)} akan berakhir ${daysLeft(k.tanggalSelesai!)} hari lagi`, type: 'warning', path: '/kontrak' });
+    });
+
+    // Pensiun ≤2 tahun
+    const pensiunSoon = pegawai.filter(p => p.statusAktif === 'Aktif' && p.batasPensiun && daysLeft(p.batasPensiun) <= 730 && daysLeft(p.batasPensiun) >= 0);
+    if (pensiunSoon.length > 0) {
+      items.push({ id: 'pensiun', text: `${pensiunSoon.length} pegawai akan memasuki batas pensiun dalam 2 tahun`, type: 'info', path: '/pegawai' });
+    }
+
+    return items.slice(0, 10);
+  }, [cuti, str, sip, kontrak, pegawai]);
+}
+
+type UserRole = 'admin' | 'direktur' | 'kepala_unit' | 'pegawai';
+
 // ─── Layout ───────────────────────────────────────────────────────────────────
 // Layout menggunakan useNavigate() — aman karena Layout selalu berada di dalam
 // Router context (sebagai child dari pathless Root route di routes.ts).
@@ -231,6 +303,7 @@ function Layout() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { isLoggedIn, currentUser, logout } = useAppContext();
+  const notifications = useComputedNotifications();
   const navigate = useNavigate();
 
   // Ctrl+K / Cmd+K opens global search
@@ -320,7 +393,7 @@ function Layout() {
                 onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }}
               >
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                {notifications.length > 0 && <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
               </button>
               {notifOpen && (
                 <div className="absolute right-0 top-12 w-80 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
@@ -328,15 +401,14 @@ function Layout() {
                     <p className="font-semibold text-gray-800 text-sm">Notifikasi</p>
                   </div>
                   <div className="max-h-72 overflow-y-auto">
-                    {notifications.map((n) => (
-                      <div key={n.id} className="flex gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50">
+                    {notifications.length === 0 ? (
+                      <div className="py-6 text-center text-xs text-gray-400">Tidak ada notifikasi</div>
+                    ) : notifications.map((n) => (
+                      <div key={n.id} className="flex gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-50" onClick={() => { setNotifOpen(false); navigate(n.path); }}>
                         <div className={`w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ${
-                          n.type === 'cuti' ? 'bg-orange-400' : n.type === 'pangkat' ? 'bg-green-400' : n.type === 'skp' ? 'bg-purple-400' : 'bg-blue-400'
+                          n.type === 'danger' ? 'bg-red-500' : n.type === 'warning' ? 'bg-orange-400' : n.type === 'cuti' ? 'bg-blue-400' : 'bg-gray-400'
                         }`} />
-                        <div>
-                          <p className="text-xs text-gray-700 leading-relaxed">{n.text}</p>
-                          <p className="text-[10px] text-gray-400 mt-1">{n.time}</p>
-                        </div>
+                        <p className="text-xs text-gray-700 leading-relaxed">{n.text}</p>
                       </div>
                     ))}
                   </div>

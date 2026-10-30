@@ -188,6 +188,53 @@ export const JENIS_CUTI = [
   },
 ];
 
+// ─── PPh 21 TER (PMK 168/2023) ───────────────────────────────────────────────
+// Tarif Efektif Rata-rata bulanan sesuai PMK No. 168/PMK.010/2023
+// Kategori A: TK/0 | Kategori B: TK/1, TK/2, TK/3, K/0 | Kategori C: K/1, K/2, K/3
+const TER_A = [
+  { max: 5400000, rate: 0 }, { max: 5650000, rate: 0.0025 }, { max: 5950000, rate: 0.005 },
+  { max: 6300000, rate: 0.0075 }, { max: 6750000, rate: 0.01 }, { max: 7500000, rate: 0.0125 },
+  { max: 8550000, rate: 0.015 }, { max: 9650000, rate: 0.0175 }, { max: 10050000, rate: 0.02 },
+  { max: 10350000, rate: 0.0225 }, { max: 10700000, rate: 0.025 }, { max: 11050000, rate: 0.03 },
+  { max: 11600000, rate: 0.035 }, { max: 12500000, rate: 0.04 }, { max: 13750000, rate: 0.05 },
+  { max: 15100000, rate: 0.06 }, { max: 16950000, rate: 0.07 }, { max: 19750000, rate: 0.08 },
+  { max: 24150000, rate: 0.09 }, { max: 26450000, rate: 0.10 }, { max: Infinity, rate: 0.12 },
+];
+const TER_B = [
+  { max: 6200000, rate: 0 }, { max: 6500000, rate: 0.0025 }, { max: 6850000, rate: 0.005 },
+  { max: 7300000, rate: 0.0075 }, { max: 9200000, rate: 0.01 }, { max: 10750000, rate: 0.015 },
+  { max: 11250000, rate: 0.0175 }, { max: 11600000, rate: 0.02 }, { max: 12600000, rate: 0.03 },
+  { max: 13600000, rate: 0.04 }, { max: 14950000, rate: 0.05 }, { max: 16400000, rate: 0.06 },
+  { max: 18450000, rate: 0.07 }, { max: 21850000, rate: 0.08 }, { max: 26000000, rate: 0.09 },
+  { max: Infinity, rate: 0.10 },
+];
+const TER_C = [
+  { max: 6600000, rate: 0 }, { max: 6950000, rate: 0.0025 }, { max: 7350000, rate: 0.005 },
+  { max: 7800000, rate: 0.0075 }, { max: 8850000, rate: 0.01 }, { max: 9800000, rate: 0.0125 },
+  { max: 10350000, rate: 0.015 }, { max: 10700000, rate: 0.0175 }, { max: 11050000, rate: 0.02 },
+  { max: 11350000, rate: 0.0225 }, { max: 11700000, rate: 0.025 }, { max: 12050000, rate: 0.03 },
+  { max: 12950000, rate: 0.035 }, { max: 14150000, rate: 0.04 }, { max: 15550000, rate: 0.05 },
+  { max: 17050000, rate: 0.06 }, { max: 19500000, rate: 0.07 }, { max: 22700000, rate: 0.08 },
+  { max: 27250000, rate: 0.09 }, { max: Infinity, rate: 0.10 },
+];
+
+/** Hitung PPh 21 bulanan menggunakan TER (PMK 168/2023)
+ *  @param bruto - penghasilan bruto sebulan
+ *  @param statusPerkawinan - 'Kawin' atau lainnya
+ *  @param jumlahTanggungan - 0, 1, 2, atau 3+
+ */
+export function hitungPPh21(bruto: number, statusPerkawinan: string, jumlahTanggungan = 1): number {
+  // Tentukan kategori TER
+  let tabel = TER_A; // default TK/0
+  if (statusPerkawinan === 'Kawin') {
+    tabel = TER_C; // K/1 (default asumsi 1 tanggungan)
+  } else if (jumlahTanggungan > 0) {
+    tabel = TER_B; // TK/1+
+  }
+  const row = tabel.find(r => bruto <= r.max) ?? tabel[tabel.length - 1];
+  return Math.round(bruto * row.rate);
+}
+
 export const UNIT_KERJA = [
   'Direktur',
   'Wakil Direktur Pend, Peng. SDM dan Hukum',

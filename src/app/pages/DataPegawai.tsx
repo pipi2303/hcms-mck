@@ -51,6 +51,26 @@ export default function DataPegawai() {
     });
   }, [dataPegawai, search, filterUnit, filterStatus, filterJenis, filterGolongan, isLoading]);
 
+  const exportSISDMK = () => {
+    const headers = ['NIK','NIP','Nama Lengkap','Jenis Kelamin','Tempat Lahir','Tanggal Lahir','Agama','Status Perkawinan','Pendidikan Terakhir','Jurusan','Institusi','Tahun Lulus','Jabatan','Jabatan Fungsional','Unit Kerja','Golongan','Pangkat','Status Pegawai','Status Aktif','Tanggal Masuk','Batas Pensiun','No. Telepon','Email','Alamat'];
+    const rows = dataPegawai.map(p => [
+      '', p.nip,
+      `${p.gelarDepan ? p.gelarDepan + ' ' : ''}${p.nama}${p.gelarBelakang ? ', ' + p.gelarBelakang : ''}`,
+      p.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+      p.tempatLahir, p.tanggalLahir, p.agama, p.statusPerkawinan,
+      p.pendidikanTerakhir, p.jurusan, p.institusi, p.tahunLulus,
+      p.jabatan, p.jabatanFungsional, p.unitKerja, p.golongan, p.pangkat,
+      p.statusPegawai, p.statusAktif, p.tanggalMasuk, p.batasPensiun,
+      p.noTelp, p.email, p.alamat,
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `SISDMK_Export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+    toast.success(`Export SISDMK berhasil — ${dataPegawai.length} pegawai`);
+  };
+
   if (isLoading) {
     return (
       <div className="p-4 lg:p-6 space-y-6">
@@ -151,8 +171,8 @@ export default function DataPegawai() {
           <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
             <Upload className="w-4 h-4" /> Import
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-            <Download className="w-4 h-4" /> Export
+          <button onClick={exportSISDMK} className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+            <Download className="w-4 h-4" /> Export SISDMK
           </button>
           <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors">
             <Plus className="w-4 h-4" /> Tambah Pegawai

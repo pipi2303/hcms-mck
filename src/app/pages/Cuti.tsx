@@ -50,13 +50,16 @@ export default function Cuti() {
     return `${p.gelarDepan || ''} ${p.nama}${p.gelarBelakang ? ', ' + p.gelarBelakang : ''}`.trim();
   };
 
-  const pendingCuti = cuti.filter(c => c.status === 'Pending');
-  const allCuti = useMemo(() => cuti.filter(c => {
+  const isESS = currentUser?.role === 'pegawai';
+  const essPegawaiId = currentUser?.pegawaiId;
+  const cutiScope = isESS && essPegawaiId ? cuti.filter(c => c.pegawaiId === essPegawaiId) : cuti;
+  const pendingCuti = cutiScope.filter(c => c.status === 'Pending');
+  const allCuti = useMemo(() => cutiScope.filter(c => {
     const matchStatus = !filterStatus || c.status === filterStatus;
     const matchJenis = !filterJenis || c.jenisCuti === filterJenis;
     const matchSearch = !search || getFullName(c.pegawaiId).toLowerCase().includes(search.toLowerCase());
     return matchStatus && matchJenis && matchSearch;
-  }), [cuti, filterStatus, filterJenis, search, pegawai]);
+  }), [cutiScope, filterStatus, filterJenis, search, pegawai]);
 
   const canApproveLevel1 = currentUser?.role === 'kepala_unit' || currentUser?.role === 'admin';
   const canApproveLevel2 = currentUser?.role === 'direktur' || currentUser?.role === 'admin';
