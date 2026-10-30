@@ -8,6 +8,7 @@ import {
   ShieldCheck, HeartPulse, DollarSign, CalendarClock, Heart,
   FileSignature, Award, ArrowRightLeft, Users2, Scale, Network, Gauge,
   UserPlus, Coins, ClipboardCheck, Building2, BarChart3, History,
+  AlarmClock, ListChecks, Megaphone, Gift,
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { toast } from 'sonner';
@@ -82,6 +83,8 @@ const menuItems: MenuSection[] = [
     roles: ['admin', 'direktur'],
     items: [
       { path: '/penggajian', label: 'Penggajian & Tunjangan', icon: DollarSign },
+      { path: '/lembur', label: 'Manajemen Lembur', icon: AlarmClock },
+      { path: '/benefit-tambahan', label: 'Benefit Tambahan', icon: Gift },
       { path: '/bpjs', label: 'BPJS Kesehatan & BPJS Ketenagakerjaan', icon: Heart },
       { path: '/kontrak', label: 'Kontrak Kerja', icon: FileSignature },
     ],
@@ -106,6 +109,7 @@ const menuItems: MenuSection[] = [
     roles: ['admin', 'direktur'],
     items: [
       { path: '/rekrutmen', label: 'Rekrutmen & Onboarding', icon: UserPlus, roles: ['admin', 'direktur'] },
+      { path: '/perencanaan-sdm', label: 'Perencanaan Kebutuhan SDM', icon: ListChecks, roles: ['admin', 'direktur'] },
       { path: '/outsourcing', label: 'Manajemen Outsourcing', icon: Building2, roles: ['admin', 'direktur'] },
     ],
   },
@@ -132,6 +136,15 @@ const menuItems: MenuSection[] = [
       { path: '/portal', label: 'Portal Pegawai (ESS)', icon: LayoutDashboard, roles: ['pegawai'] },
       { path: '/cuti', label: 'Cuti Saya', icon: CalendarDays, roles: ['pegawai'] },
       { path: '/absensi', label: 'Absensi Saya', icon: Clock, roles: ['pegawai'] },
+      { path: '/lembur', label: 'Lembur Saya', icon: AlarmClock, roles: ['pegawai'] },
+      { path: '/pengumuman', label: 'Pengumuman', icon: Megaphone, roles: ['pegawai'] },
+    ],
+  },
+  {
+    section: 'INFORMASI',
+    roles: ['admin', 'direktur', 'kepala_unit'],
+    items: [
+      { path: '/pengumuman', label: 'Papan Pengumuman', icon: Megaphone },
     ],
   },
 ];
@@ -251,7 +264,7 @@ SidebarContent.displayName = 'SidebarContent';
 
 // ─── Computed notifications from live state ───────────────────────────────────
 function useComputedNotifications() {
-  const { cuti, str, sip, kontrak, pegawai } = useAppContext();
+  const { cuti, str, sip, kontrak, pegawai, pengumuman, lembur, currentUser } = useAppContext();
   return useMemo(() => {
     const today = Date.now();
     const daysLeft = (d: string) => Math.ceil((new Date(d).getTime() - today) / 86400000);
@@ -287,8 +300,22 @@ function useComputedNotifications() {
       items.push({ id: 'pensiun', text: `${pensiunSoon.length} pegawai akan memasuki batas pensiun dalam 2 tahun`, type: 'info', path: '/pegawai' });
     }
 
-    return items.slice(0, 10);
-  }, [cuti, str, sip, kontrak, pegawai]);
+    // Pengumuman pinned baru (dalam 7 hari)
+    const weekAgoStr = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+    pengumuman.filter(p => p.isPinned && p.status === 'Aktif' && p.tanggalPublish >= weekAgoStr).slice(0, 2).forEach(p => {
+      items.push({ id: `pu-${p.id}`, text: `[Pengumuman] ${p.judul}`, type: 'info', path: '/pengumuman' });
+    });
+
+    // Lembur pending approval (admin only)
+    if (currentUser?.role === 'admin' || currentUser?.role === 'kepala_unit' || currentUser?.role === 'direktur') {
+      const lemburPending = lembur.filter(l => l.status === 'Pending').length;
+      if (lemburPending > 0) {
+        items.push({ id: 'lembur-pending', text: `${lemburPending} pengajuan lembur menunggu persetujuan`, type: 'warning', path: '/lembur' });
+      }
+    }
+
+    return items.slice(0, 12);
+  }, [cuti, str, sip, kontrak, pegawai, pengumuman, lembur, currentUser]);
 }
 
 type UserRole = 'admin' | 'direktur' | 'kepala_unit' | 'pegawai';

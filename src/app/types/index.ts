@@ -879,6 +879,73 @@ export interface TenagaOutsourcing {
   keterangan?: string;
 }
 
+// ─── LEMBUR (OVERTIME) ───────────────────────────────────────────────────────
+export type JenisLembur = 'Hari Kerja' | 'Hari Libur' | 'Hari Raya';
+export type StatusLembur = 'Pending' | 'Disetujui' | 'Ditolak' | 'Dibayar';
+
+export interface LemburRecord {
+  id: string;
+  pegawaiId: string;
+  tanggal: string;
+  jamMulai: string;
+  jamSelesai: string;
+  durasiJam: number;
+  jenisLembur: JenisLembur;
+  alasan: string;
+  status: StatusLembur;
+  disetujuiOleh?: string;
+  tanggalDisetujui?: string;
+  upahLembur?: number;
+  keterangan?: string;
+}
+
+// ─── PERENCANAAN SDM ──────────────────────────────────────────────────────────
+export type PrioritasRencana = 'Mendesak' | 'Normal' | 'Rendah';
+
+export interface RencanaSDM {
+  id: string;
+  tahun: number;
+  unitKerja: string;
+  jabatan: string;
+  kualifikasiPendidikan: string;
+  targetHeadcount: number;
+  anggaran?: number;
+  prioritas: PrioritasRencana;
+  statusRekrutmen: 'Belum Direkrut' | 'Sedang Direkrut' | 'Terpenuhi';
+  rekrutmenId?: string;
+  keterangan?: string;
+}
+
+// ─── PENGUMUMAN INTERNAL ──────────────────────────────────────────────────────
+export type KategoriPengumuman = 'Kepegawaian' | 'Pelatihan' | 'Kebijakan' | 'Umum' | 'Penting';
+
+export interface PengumumanRecord {
+  id: string;
+  judul: string;
+  konten: string;
+  kategori: KategoriPengumuman;
+  tanggalPublish: string;
+  tanggalExpiry?: string;
+  targetAudiens: string;
+  dibuatOleh: string;
+  isPinned: boolean;
+  status: 'Draft' | 'Aktif' | 'Kadaluarsa';
+}
+
+// ─── BENEFIT TAMBAHAN ─────────────────────────────────────────────────────────
+export type JenisBenefit = 'Seragam' | 'Transport' | 'Makan' | 'Perumahan' | 'Pulsa' | 'Lainnya';
+
+export interface BenefitRecord {
+  id: string;
+  pegawaiId: string;
+  jenisBenefit: JenisBenefit;
+  nilaiPerBulan: number;
+  tanggalMulai: string;
+  tanggalSelesai?: string;
+  isAktif: boolean;
+  keterangan?: string;
+}
+
 // ─── AUDIT TRAIL ─────────────────────────────────────────────────────────────
 export type AksiAudit = 'Tambah' | 'Ubah' | 'Hapus' | 'Approve' | 'Tolak' | 'Login' | 'Logout';
 

@@ -41,6 +41,10 @@ const Outsourcing           = lazy(() => import('./pages/Outsourcing'));
 const PortalPegawai         = lazy(() => import('./pages/PortalPegawai'));
 const WorkforceAnalytics    = lazy(() => import('./pages/WorkforceAnalytics'));
 const AuditTrail            = lazy(() => import('./pages/AuditTrail'));
+const Lembur                = lazy(() => import('./pages/Lembur'));
+const PerencanaanSDM        = lazy(() => import('./pages/PerencanaanSDM'));
+const Pengumuman            = lazy(() => import('./pages/Pengumuman'));
+const BenefitTambahan       = lazy(() => import('./pages/BenefitTambahan'));
 
 // ─── Router Singleton ─────────────────────────────────────────────────────────
 const ROUTER_KEY = '__hrAppRouter_v8';
@@ -155,6 +159,22 @@ function buildRouter(): RouterType {
             {
               path: 'audit-trail',
               element: <ProtectedRoute roles={['admin', 'direktur']}><AuditTrail /></ProtectedRoute>
+            },
+            {
+              path: 'lembur',
+              element: <ProtectedRoute roles={['admin', 'direktur', 'kepala_unit', 'pegawai']}><Lembur /></ProtectedRoute>
+            },
+            {
+              path: 'perencanaan-sdm',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><PerencanaanSDM /></ProtectedRoute>
+            },
+            {
+              path: 'pengumuman',
+              element: <ProtectedRoute roles={['admin', 'direktur', 'kepala_unit', 'pegawai']}><Pengumuman /></ProtectedRoute>
+            },
+            {
+              path: 'benefit-tambahan',
+              element: <ProtectedRoute roles={['admin', 'direktur']}><BenefitTambahan /></ProtectedRoute>
             },
             { path: '*',                        Component: NotFound },
           ],

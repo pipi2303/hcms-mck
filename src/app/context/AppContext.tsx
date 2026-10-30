@@ -13,6 +13,7 @@ import type {
   KompetensiWajib, KompetensiPegawai,
   VendorOutsourcing, TenagaOutsourcing,
   AuditLog, AksiAudit,
+  LemburRecord, RencanaSDM, PengumumanRecord, BenefitRecord,
 } from '../types';
 import {
   dataPegawai as initialPegawai,
@@ -424,6 +425,10 @@ interface AppState {
   vendorOutsourcing: VendorOutsourcing[];
   tenagaOutsourcing: TenagaOutsourcing[];
   auditLog: AuditLog[];
+  lembur: LemburRecord[];
+  rencanaSDM: RencanaSDM[];
+  pengumuman: PengumumanRecord[];
+  benefit: BenefitRecord[];
   currentUser: AppUser | null;
   isLoggedIn: boolean;
 }
@@ -541,7 +546,19 @@ type Action =
   | { type: 'UPDATE_TENAGA_OS'; t: TenagaOutsourcing }
   | { type: 'DELETE_TENAGA_OS'; id: string }
   | { type: 'ADD_AUDIT_LOG'; log: AuditLog }
-  | { type: 'CLEAR_AUDIT_LOG' };
+  | { type: 'CLEAR_AUDIT_LOG' }
+  | { type: 'ADD_LEMBUR'; l: LemburRecord }
+  | { type: 'UPDATE_LEMBUR'; l: LemburRecord }
+  | { type: 'DELETE_LEMBUR'; id: string }
+  | { type: 'ADD_RENCANA_SDM'; r: RencanaSDM }
+  | { type: 'UPDATE_RENCANA_SDM'; r: RencanaSDM }
+  | { type: 'DELETE_RENCANA_SDM'; id: string }
+  | { type: 'ADD_PENGUMUMAN'; p: PengumumanRecord }
+  | { type: 'UPDATE_PENGUMUMAN'; p: PengumumanRecord }
+  | { type: 'DELETE_PENGUMUMAN'; id: string }
+  | { type: 'ADD_BENEFIT'; b: BenefitRecord }
+  | { type: 'UPDATE_BENEFIT'; b: BenefitRecord }
+  | { type: 'DELETE_BENEFIT'; id: string };
 
 // ─── Reducer ─────────────────────────────────────────────────────────────────
 function reducer(state: AppState, action: Action): AppState {
@@ -704,6 +721,18 @@ function reducer(state: AppState, action: Action): AppState {
     case 'DELETE_TENAGA_OS': return { ...state, tenagaOutsourcing: state.tenagaOutsourcing.filter(t => t.id !== action.id) };
     case 'ADD_AUDIT_LOG': return { ...state, auditLog: [action.log, ...state.auditLog].slice(0, 500) };
     case 'CLEAR_AUDIT_LOG': return { ...state, auditLog: [] };
+    case 'ADD_LEMBUR': return { ...state, lembur: [...state.lembur, action.l] };
+    case 'UPDATE_LEMBUR': return { ...state, lembur: state.lembur.map(l => l.id === action.l.id ? action.l : l) };
+    case 'DELETE_LEMBUR': return { ...state, lembur: state.lembur.filter(l => l.id !== action.id) };
+    case 'ADD_RENCANA_SDM': return { ...state, rencanaSDM: [...state.rencanaSDM, action.r] };
+    case 'UPDATE_RENCANA_SDM': return { ...state, rencanaSDM: state.rencanaSDM.map(r => r.id === action.r.id ? action.r : r) };
+    case 'DELETE_RENCANA_SDM': return { ...state, rencanaSDM: state.rencanaSDM.filter(r => r.id !== action.id) };
+    case 'ADD_PENGUMUMAN': return { ...state, pengumuman: [...state.pengumuman, action.p] };
+    case 'UPDATE_PENGUMUMAN': return { ...state, pengumuman: state.pengumuman.map(p => p.id === action.p.id ? action.p : p) };
+    case 'DELETE_PENGUMUMAN': return { ...state, pengumuman: state.pengumuman.filter(p => p.id !== action.id) };
+    case 'ADD_BENEFIT': return { ...state, benefit: [...state.benefit, action.b] };
+    case 'UPDATE_BENEFIT': return { ...state, benefit: state.benefit.map(b => b.id === action.b.id ? action.b : b) };
+    case 'DELETE_BENEFIT': return { ...state, benefit: state.benefit.filter(b => b.id !== action.id) };
 
     default:
       return state;
@@ -823,6 +852,18 @@ interface AppContextValue extends AppState {
   deleteTenagaOutsourcing: (id: string) => void;
   addAuditLog: (modul: string, aksi: AksiAudit, deskripsi: string, opts?: { targetId?: string; targetNama?: string; nilaiLama?: string; nilaiBaru?: string }) => void;
   clearAuditLog: () => void;
+  addLembur: (l: Omit<LemburRecord, 'id'>) => void;
+  updateLembur: (l: LemburRecord) => void;
+  deleteLembur: (id: string) => void;
+  addRencanaSDM: (r: Omit<RencanaSDM, 'id'>) => void;
+  updateRencanaSDM: (r: RencanaSDM) => void;
+  deleteRencanaSDM: (id: string) => void;
+  addPengumuman: (p: Omit<PengumumanRecord, 'id'>) => void;
+  updatePengumuman: (p: PengumumanRecord) => void;
+  deletePengumuman: (id: string) => void;
+  addBenefit: (b: Omit<BenefitRecord, 'id'>) => void;
+  updateBenefit: (b: BenefitRecord) => void;
+  deleteBenefit: (id: string) => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -885,6 +926,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     vendorOutsourcing: [],
     tenagaOutsourcing: [],
     auditLog: [],
+    lembur: [],
+    rencanaSDM: [],
+    pengumuman: [],
+    benefit: [],
     currentUser: savedUser,
     isLoggedIn: !!savedUser,
   });
@@ -1189,6 +1234,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [state.currentUser]);
   const clearAuditLog = useCallback(() => dispatch({ type: 'CLEAR_AUDIT_LOG' }), []);
 
+  const addLembur = useCallback((l: Omit<LemburRecord, 'id'>) => dispatch({ type: 'ADD_LEMBUR', l: { ...l, id: genId('LB') } }), []);
+  const updateLembur = useCallback((l: LemburRecord) => dispatch({ type: 'UPDATE_LEMBUR', l }), []);
+  const deleteLembur = useCallback((id: string) => dispatch({ type: 'DELETE_LEMBUR', id }), []);
+  const addRencanaSDM = useCallback((r: Omit<RencanaSDM, 'id'>) => dispatch({ type: 'ADD_RENCANA_SDM', r: { ...r, id: genId('RS') } }), []);
+  const updateRencanaSDM = useCallback((r: RencanaSDM) => dispatch({ type: 'UPDATE_RENCANA_SDM', r }), []);
+  const deleteRencanaSDM = useCallback((id: string) => dispatch({ type: 'DELETE_RENCANA_SDM', id }), []);
+  const addPengumuman = useCallback((p: Omit<PengumumanRecord, 'id'>) => dispatch({ type: 'ADD_PENGUMUMAN', p: { ...p, id: genId('PU') } }), []);
+  const updatePengumuman = useCallback((p: PengumumanRecord) => dispatch({ type: 'UPDATE_PENGUMUMAN', p }), []);
+  const deletePengumuman = useCallback((id: string) => dispatch({ type: 'DELETE_PENGUMUMAN', id }), []);
+  const addBenefit = useCallback((b: Omit<BenefitRecord, 'id'>) => dispatch({ type: 'ADD_BENEFIT', b: { ...b, id: genId('BN') } }), []);
+  const updateBenefit = useCallback((b: BenefitRecord) => dispatch({ type: 'UPDATE_BENEFIT', b }), []);
+  const deleteBenefit = useCallback((id: string) => dispatch({ type: 'DELETE_BENEFIT', id }), []);
+
   const value: AppContextValue = {
     ...state,
     dispatch,
@@ -1229,6 +1287,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addVendorOutsourcing, updateVendorOutsourcing, deleteVendorOutsourcing,
     addTenagaOutsourcing, updateTenagaOutsourcing, deleteTenagaOutsourcing,
     addAuditLog, clearAuditLog,
+    addLembur, updateLembur, deleteLembur,
+    addRencanaSDM, updateRencanaSDM, deleteRencanaSDM,
+    addPengumuman, updatePengumuman, deletePengumuman,
+    addBenefit, updateBenefit, deleteBenefit,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
